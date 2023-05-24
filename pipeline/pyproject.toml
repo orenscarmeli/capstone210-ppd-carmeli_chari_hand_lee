@@ -13,6 +13,7 @@ xport = "^3.6.1"
 requests = "^2.31.0"
 bs4 = "^0.0.1"
 lxml = "^4.9.2"
+tqdm = "^4.65.0"
 
 
 [tool.poetry.group.dev.dependencies]
