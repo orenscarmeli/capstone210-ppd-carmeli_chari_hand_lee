@@ -13,6 +13,8 @@ xport = "^3.6.1"
 requests = "^2.31.0"
 bs4 = "^0.0.1"
 lxml = "^4.9.2"
+joblib = "^1.2.0"
+scikit-learn = "^1.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
