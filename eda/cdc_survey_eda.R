@@ -8,7 +8,7 @@ library(dplyr)
 # ####################################################################################
 # Load data
 
-cdc_survey_data <- as.data.table(read.csv("pipeline/df_cdc_clean.csv"))
+cdc_survey_data <- as.data.table(read.csv("data/cdc_nhanes_survey_responses_clean.csv"))
 
 # ####################################################################################
 # Candidate Target Variables
@@ -72,8 +72,8 @@ correlation_variables <- c(
   "count_minutes_moderate_sedentary_activity",   
   "count_days_physical_activity_youth",             
   "has_tried_to_lose_weight_12mo",               
-  "has_ate_less_to_lose_weight",                 
-  "has_exercised_to_lose_weight",                
+# "has_ate_less_to_lose_weight",                 
+#  "has_exercised_to_lose_weight",                
   "count_lost_10plus_pounds",                      
   "count_tried_to_lose_weight_youth",            
   "has_been_pregnant",                           
@@ -87,7 +87,7 @@ correlation_variables <- c(
   "monthly_poverty_index_category",                 
   "count_hours_worked_last_week",                
   "has_smoked_tabacco_last_5days",              
-  "gender",                                      
+  "is_male",                                      
   "age_in_years",                               
   "education_level",                             
   "is_usa_born"           
