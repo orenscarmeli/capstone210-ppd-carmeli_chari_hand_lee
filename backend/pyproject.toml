@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pipeline"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["Jon Hand <hand.jonathan.13@gmail.com>"]
 readme = "README.md"
@@ -16,10 +16,13 @@ lxml = "^4.9.2"
 joblib = "^1.2.0"
 scikit-learn = "^1.2.2"
 imbalanced-learn = "^0.10.1"
-ydata-profiling = "^4.2.0"
 ipywidgets = "^8.0.6"
 xgboost = "^1.7.5"
-altair = "^5.0.1"
+fastapi-cache2 = "0.1.9"
+fastapi = "^0.89.1"
+uvicorn = "^0.22.0"
+redis = "^4.6.0"
+pydantic = "^1.10.9"
 
 
 [tool.poetry.group.dev.dependencies]

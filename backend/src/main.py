@@ -15,7 +15,7 @@ import os
 import logging
 
 dirname = os.path.dirname(__file__)
-clf = joblib.load(os.path.join(dirname, 'lm_model_pipeline.pkl'))
+clf = joblib.load(os.path.join(dirname, 'model_pipeline.pkl'))
 
 # Use pydantic.Extra.forbid to only except exact field set from client.
 class Survey(BaseModel, extra=Extra.forbid):
@@ -110,11 +110,12 @@ async def get_health():
     return {"message": current_time}
 
 
+# @app.post("/predict", response_model=Predictions)
+# @cache(expire=60)
 @app.post("/predict", response_model=Predictions)
-@cache(expire=60)
-async def predict(survey_input: surveys):
+async def predict(survey_input: Surveys):
     # logging.warning("in predict")
-    survey_list = [list(vars(s).values()) for h in survey_input.surveys]
+    survey_list = [list(vars(s).values()) for s in survey_input.surveys]
     survey_features = np.array(
         list(survey_list)
     )

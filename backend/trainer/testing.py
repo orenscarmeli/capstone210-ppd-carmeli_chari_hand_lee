@@ -39,9 +39,8 @@ data = {
     'has_tried_to_lose_weight_12mo': 0.0,
     'count_days_moderate_recreational_activity': 2.0,
     'count_minutes_moderate_sedentary_activity': 960.0
-    }
+}
 X = np.array([list(data.values())])
-# X = X.reshape(-1, 1)
 print(X)
 print(clf.predict(X))
 

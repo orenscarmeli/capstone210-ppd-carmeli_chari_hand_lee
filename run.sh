@@ -3,7 +3,11 @@
 IMAGE_NAME="w210backend"
 IMAGE_TAG="1.0.0"
 CONTAINER_NAME="w210backendcontainer"
-NAMESPACE="w210_jhand"
+NAMESPACE="w210jhand"
+
+echo "starting redis"
+docker run -d --name temp-redis -p 6379:6379 redis
+echo "redis started"
 
 cd backend
 
@@ -12,20 +16,28 @@ poetry env remove python3.10
 poetry install
 
 # train model
-poetry run python backend/trainer/train.py
+echo "training model..."
+poetry run python trainer/train.py
 
 # move model to src
-mv backend/trainer/model_pipeline.pkl backend/src/model_pipeline.pkl
+mv model_pipeline.pkl src/model_pipeline.pkl
 
 # run tests
-poetry run pytest -vv -s
+# poetry run pytest -vv -s
 
-minikube delete
+# minikube delete
 minikube start --kubernetes-version=v1.25.4
-eval $(minikube docker-env)
 
+# can build inside minikube 
+eval $(minikube docker-env)
 docker build -t $IMAGE_NAME:$IMAGE_TAG .
 echo "container built..."
+
+# # or can load existing image into minikube
+# # saves build time if image is not changing
+# echo "pushing $IMAGE_NAME:$IMAGE_TAG"
+# minikube image load $IMAGE_NAME:$IMAGE_TAG
+# echo "pushed existing container to minikube"
 
 cd infra
 
@@ -52,12 +64,15 @@ while ! $finished; do
         sleep 1
     fi
 done
+echo "health check"
+curl -o /dev/null -s -w "%{http_code}\n" -X GET "http://localhost:8000/health"
 
 echo "\ntest list of inputs:"
 curl -X POST -H 'Content-Type: application/json' localhost:8000/predict -d \
 '''
     {
-        "surveys" : [
+        "surveys" : [ 
+            {
                "has_health_insurance": 1.0,
                 "difficult_doing_daytoday_tasks": 0.0,
                 "age_range_first_menstrual_period": 0,
@@ -89,9 +104,13 @@ curl -X POST -H 'Content-Type: application/json' localhost:8000/predict -d \
                 "has_tried_to_lose_weight_12mo": 0.0,
                 "count_days_moderate_recreational_activity": 2.0,
                 "count_minutes_moderate_sedentary_activity": 960.0
+            }
         ]
     }
 '''
+
+
+read -p "Press enter to continue"
 
 kill $(pgrep kubectl)
 
