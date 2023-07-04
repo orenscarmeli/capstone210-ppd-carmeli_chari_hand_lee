@@ -91,7 +91,7 @@ async def startup():
     # uses environment var in yaml
     # defaults to localhost if not found
     # redis_url = os.environ.get('REDIS_URL', 'localhost')
-    redis_url = 'localhost'
+    redis_url = os.environ.get('REDIS_URL', 'localhost')
     redis = aioredis.from_url(f"redis://{redis_url}:6379", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     

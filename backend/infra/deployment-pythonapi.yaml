@@ -6,7 +6,7 @@ metadata:
   labels:
     app: pythonapi-deployment
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: pythonapi-deployment
@@ -35,7 +35,7 @@ spec:
 
       containers:
       - name: w210backend
-        image: w210backend:1.0.0
+        image: 621057158777.dkr.ecr.us-east-1.amazonaws.com/w210jhand:latest
         imagePullPolicy: Never
         env:
         - name: REDIS_URL

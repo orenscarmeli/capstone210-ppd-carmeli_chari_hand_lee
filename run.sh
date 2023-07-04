@@ -1,8 +1,8 @@
 #!/bin/sh
 # set -x
-IMAGE_NAME="w210backend"
-IMAGE_TAG="1.0.0"
-CONTAINER_NAME="w210backendcontainer"
+IMAGE_NAME="621057158777.dkr.ecr.us-east-1.amazonaws.com/w210jhand"
+IMAGE_TAG="latest"
+CONTAINER_NAME="621057158777.dkr.ecr.us-east-1.amazonaws.com/w210jhand"
 NAMESPACE="w210jhand"
 
 echo "starting redis"
@@ -119,3 +119,8 @@ kubectl delete --all deployment --namespace=$NAMESPACE
 
 kubectl delete namespace $NAMESPACE
 minikube stop
+
+
+export IMAGE_NAME="public.ecr.aws/f8e0d4w0/w210jhand"
+export IMAGE_TAG="latest"
+export NAMESPACE="w210jhand"
