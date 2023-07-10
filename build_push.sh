@@ -6,8 +6,9 @@ CONTAINER_NAME="lab4container"
 NAMESPACE="w210jhand"
 #621057158777.dkr.ecr.us-east-1.amazonaws.com/w210jhand
 # short id of most recent commit
-TAG="latest"
-
+TAG=$(git log -n1 --format="%h")
+AWS_DEFAULT_REGION="us-west-1"
+AWS_ACCESS_KEY_ID="AKIAZBGPEFZ42LQHR36S"
 # FQDN = Fully-Qualified Domain Name
 
 # IMAGE_FQDN="${ACR_DOMAIN}/${NAMESPACE}/${IMAGE_NAME}"
@@ -18,7 +19,6 @@ cd backend
 
 # az login --tenant berkeleydatasciw255.onmicrosoft.com
 # az acr login --name w255mids
-
 
 # ########## dev ##############
 # minikube delete
@@ -40,36 +40,36 @@ cd backend
 # docker pull $ACR_DOMAIN/$NAMESPACE/$IMAGE_NAME:$TAG
 # echo "container built..."
 
-###### AWS EKS Specific ######
-kubectl config use-context jon.hand@test-cluster.us-west-1.eksctl.io -n $NAMESPACE
-docker buildx build --platform linux/amxd64 -t $IMAGE_NAME:$TAG .
-
-docker tag e9ae3c220b23 aws_account_id.dkr.ecr.us-west-2.amazonaws.com/my-repository:tag
-docker tag ${IMAGE_NAME} ${IMAGE_FQDN}
-docker push aws_account_id.dkr.ecr.us-west-2.amazonaws.com/my-repository:tag
-
-
-
-kubectl create -f ./namespace.yaml
-kubectl apply -f deployment-redis.yaml -n $NAMESPACE
-kubectl apply -f service-redis.yaml -n $NAMESPACE
-kubectl apply -f deployment-pythonapi.yaml -n $NAMESPACE
-kubectl apply -f service-prediction.yaml -n $NAMESPACE
-
-# sub tag with the latest commit
-sed "s/\[TAG\]/${TAG}/g" .k8s/overlays/prod/patch-deployment-lab4_copy.yaml > .k8s/overlays/prod/patch-deployment-lab4.yaml
-
-##### AWS ECR ######
+###### AWS ECR Specific ######
+# kubectl config use-context jon.hand@test-cluster.us-west-1.eksctl.io -n $NAMESPACE
 # docker buildx build --platform linux/amxd64 -t $IMAGE_NAME:$TAG .
+
+aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/f8e0d4w0
+docker buildx build -t w210jhand:$TAG --platform=linux/amd64 .
+
+docker tag w210jhand:$TAG public.ecr.aws/f8e0d4w0/w210jhand:$TAG
+
+docker push public.ecr.aws/f8e0d4w0/w210jhand:$TAG
+
+
+# # EKS
+# kubectl create -f ./namespace.yaml
+# kubectl apply -f deployment-redis.yaml -n $NAMESPACE
+# kubectl apply -f service-redis.yaml -n $NAMESPACE
+# kubectl apply -f deployment-pythonapi.yaml -n $NAMESPACE
+# kubectl apply -f service-prediction.yaml -n $NAMESPACE
+
+# # sub tag with the latest commit
+# sed "s/\[TAG\]/${TAG}/g" .k8s/overlays/prod/patch-deployment-lab4_copy.yaml > .k8s/overlays/prod/patch-deployment-lab4.yaml
 
 # make sure we don't have other virtual services running
 # kubectl delete --all virtualservice --namespace=$NAMESPACE
 
 # apply overlays
-kubectl apply -k .k8s/overlays/prod -n $NAMESPACE
+# kubectl apply -k .k8s/overlays/prod -n $NAMESPACE
 
 # make sure k8 is ready
-kubectl rollout status deployment pythonapi-deployment -n $NAMESPACE
+# kubectl rollout status deployment pythonapi-deployment -n $NAMESPACE
 
 # test predict endpoint
 curl -X POST -H 'Content-Type: application/json' 'http://54.193.212.89:8000/predict' -d \
@@ -113,7 +113,7 @@ curl -X POST -H 'Content-Type: application/json' 'http://54.193.212.89:8000/pred
     }
 '''
 
-curl -o /dev/null -s -w "%{http_code}\n" -X GET 'http://network-load-balancer-867733373408bca0.elb.us-west-1.amazonaws.com/health'
+# curl -o /dev/null -s -w "%{http_code}\n" -X GET 'http://network-load-balancer-867733373408bca0.elb.us-west-1.amazonaws.com/health'
 
 
 # kubectl delete --all service --namespace=$NAMESPACE

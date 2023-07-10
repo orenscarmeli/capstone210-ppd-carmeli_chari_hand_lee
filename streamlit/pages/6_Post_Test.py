@@ -11,7 +11,7 @@ st.write(
 
 def PostRequestSurveyAPI():
 
-    url = 'http://54.193.212.89:8000/predict'
+    url = 'http://network-load-balancer-3ec3c60f32bd38c8.elb.us-west-1.amazonaws.com/predict'
     myobj = {
         "surveys" : [ 
             {

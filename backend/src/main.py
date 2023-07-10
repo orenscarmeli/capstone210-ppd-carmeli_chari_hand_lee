@@ -96,8 +96,9 @@ async def get_health():
     return {"message": current_time}
 
 
+# @app.post("/predict", response_model=Predictions)
+# @cache(expire=60)
 @app.post("/predict", response_model=Predictions)
-@cache(expire=60)
 async def predict(survey_input: Surveys):
     # logging.warning("in predict")
     survey_list = [list(vars(s).values()) for s in survey_input.surveys]
