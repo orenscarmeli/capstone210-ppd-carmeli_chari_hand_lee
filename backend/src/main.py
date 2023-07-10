@@ -92,7 +92,9 @@ async def root():
 
 @app.get("/health")
 async def get_health():
+
     current_time = datetime.now().isoformat()
+    logging.warning(current_time)
     return {"message": current_time}
 
 
