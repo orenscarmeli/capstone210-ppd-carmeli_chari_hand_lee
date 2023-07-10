@@ -19,37 +19,37 @@ clf = joblib.load(os.path.join(dirname, 'model_pipeline.pkl'))
 
 # Use pydantic.Extra.forbid to only except exact field set from client.
 class Survey(BaseModel, extra=Extra.forbid):
-    has_health_insurance: float
-    difficult_doing_daytoday_tasks: float
-    age_range_first_menstrual_period: float
-    weight_change_intentional: float
-    thoughts_you_would_be_better_off_dead: float
-    little_interest_in_doing_things: float
-    trouble_concentrating: float
-    food_security_level_household: float
-    general_health_condition: float
-    monthly_poverty_index: float
-    food_security_level_adult: float
-    count_days_seen_doctor_12mo: float
-    has_overweight_diagnosis: float
-    feeling_down_depressed_hopeless: float
-    count_minutes_moderate_recreational_activity: float
-    have_liver_condition: float
-    pain_relief_from_cardio_recoverytime: float
-    education_level: float
-    count_hours_worked_last_week: float
-    age_in_years: float
-    has_diabetes: float
-    alcoholic_drinks_past_12mo: float
-    count_lost_10plus_pounds: float
-    days_nicotine_substitute_used: float
-    age_with_angina_pectoris: float
-    annual_healthcare_visit_count: float
-    poor_appetitie_or_overeating: float
-    feeling_bad_about_yourself: float
-    has_tried_to_lose_weight_12mo: float
-    count_days_moderate_recreational_activity: float
-    count_minutes_moderate_sedentary_activity: float
+    has_health_insurance: float | None = None
+    difficult_doing_daytoday_tasks: float | None = None
+    age_range_first_menstrual_period: float | None = None
+    weight_change_intentional: float | None = None
+    thoughts_you_would_be_better_off_dead: float | None = None
+    little_interest_in_doing_things: float | None = None
+    trouble_concentrating: float | None = None
+    food_security_level_household: float | None = None
+    general_health_condition: float | None = None
+    monthly_poverty_index: float | None = None
+    food_security_level_adult: float | None = None
+    count_days_seen_doctor_12mo: float | None = None
+    has_overweight_diagnosis: float | None = None
+    feeling_down_depressed_hopeless: float | None = None
+    count_minutes_moderate_recreational_activity: float | None = None
+    have_liver_condition: float | None = None
+    pain_relief_from_cardio_recoverytime: float | None = None
+    education_level: float | None = None
+    count_hours_worked_last_week: float | None = None
+    age_in_years: float | None = None
+    has_diabetes: float | None = None
+    alcoholic_drinks_past_12mo: float | None = None
+    count_lost_10plus_pounds: float | None = None
+    days_nicotine_substitute_used: float | None = None
+    age_with_angina_pectoris: float | None = None
+    annual_healthcare_visit_count: float | None = None
+    poor_appetitie_or_overeating: float | None = None
+    feeling_bad_about_yourself: float | None = None
+    has_tried_to_lose_weight_12mo: float | None = None
+    count_days_moderate_recreational_activity: float | None = None
+    count_minutes_moderate_sedentary_activity: float | None = None
 
     # to convert to numpy array
     def to_np(self):
