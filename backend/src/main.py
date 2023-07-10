@@ -68,12 +68,6 @@ class Surveys(BaseModel):
 
 class Prediction(BaseModel):
     prediction: float
-    
-    # @validator('prediction')
-    # def prediction_must_be_positive(cls, v):
-    #     if v <= 0:
-    #         raise ValueError('must be positive')
-    #     return v
 
 class Predictions(BaseModel):
     predictions: list[Prediction]
@@ -81,38 +75,29 @@ class Predictions(BaseModel):
 app = FastAPI()
 logger = logging.getLogger("api")
 
-# caching
-@cache(expire=60)
-async def get_cache():
-    return 1
-
 @app.on_event("startup")
 async def startup():
     # uses environment var in yaml
     # defaults to localhost if not found
     # redis_url = os.environ.get('REDIS_URL', 'localhost')
-    redis_url = os.environ.get('REDIS_URL', 'localhost')
+    # redis_url = os.environ.get('REDIS_URL', 'localhost')
+    redis_url = 'redis-service'
     redis = aioredis.from_url(f"redis://{redis_url}:6379", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
-    
-# status code 422 is for requests with semantic error
-# hitting the endpoint with with an incorrect param 
-# or no param will raise this error
-# @app.get("/hello")
-# async def read_hello(name: str):
-#     return {"message": "hello " + name}
+
+@app.get("/")
+async def root():
+    current_time = datetime.now().isoformat()
+    return {"message": current_time}
 
 @app.get("/health")
 async def get_health():
-    
     current_time = datetime.now().isoformat()
-    logging.warning(current_time)
     return {"message": current_time}
 
 
-# @app.post("/predict", response_model=Predictions)
-# @cache(expire=60)
 @app.post("/predict", response_model=Predictions)
+@cache(expire=60)
 async def predict(survey_input: Surveys):
     # logging.warning("in predict")
     survey_list = [list(vars(s).values()) for s in survey_input.surveys]
