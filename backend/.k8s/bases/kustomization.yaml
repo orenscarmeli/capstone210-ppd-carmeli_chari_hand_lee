@@ -1,9 +1,9 @@
 ---
-namespace: jonhand
+namespace: w210jhand
 resources:
   - config-map.yaml
   # - persistent-volume.yaml
-  - deployment-lab4.yaml
+  - deployment-w210.yaml
   - deployment-redis.yaml
-  - service-lab4.yaml
+  - service-w210.yaml
   - service-redis.yaml

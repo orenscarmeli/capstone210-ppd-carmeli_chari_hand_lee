@@ -1,10 +1,10 @@
 ---
-namespace: jonhand
+namespace: w210jhand
 bases:
   - ../../bases
 resources:
   - namespace.yaml
 patches:
-  - path: patch-deployment-lab4.yaml
+  - path: patch-deployment-w210.yaml
     target:
       kind: Deployment

@@ -2,13 +2,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lab4
+  name: w210
+  namespace: w210jhand
+
 spec:
   template:
     spec:
       containers:
-        - name: lab4
-          image: 621057158777.dkr.ecr.us-east-1.amazonaws.com/w210jhand:latest
+        - name: w210
+          image: public.ecr.aws/f8e0d4w0/w210jhand:latest
           resources:
             requests:
               cpu: 200m
@@ -16,7 +18,7 @@ spec:
             limits:
               cpu: 500m
               memory: 500Mi
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           readinessProbe:

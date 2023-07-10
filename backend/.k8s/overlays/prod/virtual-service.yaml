@@ -2,12 +2,12 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: lab4
+  name: w210
   namespace: w210jhand
 
 spec:
   hosts:
-    - jonhand.mids255.com
+    - "*"
   gateways:
     - istio-ingress/jonhand-gateway
   http:
@@ -22,6 +22,36 @@ spec:
             prefix: /openapi.json
       route:
         - destination:
-            host: lab4
+            host: w210
             port:
               number: 8000
+              
+# ---
+# apiVersion: networking.istio.io/v1beta1
+# kind: VirtualService
+# metadata:
+#   name: w210
+#   namespace: w210jhand
+
+# spec:
+#   hosts:
+#     - jonhand.mids255.com
+#   gateways:
+#     - istio-ingress/jonhand-gateway
+#   http:
+#     - match:
+#         - uri:
+#             exact: /predict
+#         - uri:
+#             prefix: /health
+#         - uri:
+#             prefix: /docs
+#         - uri:
+#             prefix: /openapi.json
+#       route:
+#         - destination:
+#             host: w210
+#             port:
+#               number: 8000
+
+
