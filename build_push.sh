@@ -72,7 +72,7 @@ docker push public.ecr.aws/f8e0d4w0/w210jhand:$TAG
 # kubectl rollout status deployment pythonapi-deployment -n $NAMESPACE
 
 # test predict endpoint
-curl -X POST -H 'Content-Type: application/json' 'http://54.193.212.89:8000/predict' -d \
+curl -X POST -H 'Content-Type: application/json' 'http://network-load-balancer-3ec3c60f32bd38c8.elb.us-west-1.amazonaws.com/predict' -d \
 '''
     {
         "surveys" : [ 
@@ -112,7 +112,35 @@ curl -X POST -H 'Content-Type: application/json' 'http://54.193.212.89:8000/pred
         ]
     }
 '''
-
+# with some missing data
+curl -X POST -H 'Content-Type: application/json' 'http://network-load-balancer-3ec3c60f32bd38c8.elb.us-west-1.amazonaws.com/predict' -d \
+'''
+    {
+        "surveys" : [ 
+            {
+               "has_health_insurance": 1.0,
+                "age_range_first_menstrual_period": 0,
+                "weight_change_intentional": 0,
+                "thoughts_you_would_be_better_off_dead": 0.0,
+                "pain_relief_from_cardio_recoverytime": 1.0,
+                "education_level": 5.0,
+                "count_hours_worked_last_week": 40.0,
+                "age_in_years": 44.0,
+                "has_diabetes": 1.0,
+                "alcoholic_drinks_past_12mo": 5.0,
+                "count_lost_10plus_pounds": 3.0,
+                "days_nicotine_substitute_used": 0,
+                "age_with_angina_pectoris": 33.0,
+                "annual_healthcare_visit_count": 3.0,
+                "poor_appetitie_or_overeating": 1.0,
+                "feeling_bad_about_yourself": 0.0,
+                "has_tried_to_lose_weight_12mo": 0.0,
+                "count_days_moderate_recreational_activity": 2.0,
+                "count_minutes_moderate_sedentary_activity": 960.0
+            }
+        ]
+    }
+'''
 # curl -o /dev/null -s -w "%{http_code}\n" -X GET 'http://network-load-balancer-867733373408bca0.elb.us-west-1.amazonaws.com/health'
 
 
