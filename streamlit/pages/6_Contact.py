@@ -1,8 +1,9 @@
 import streamlit as st
 
-st.set_page_config(page_title="Contact us", page_icon="")
+st.set_page_config(page_title="Contact us",
+                   page_icon="./page_logo.png")
 
-st.markdown("# Contact us")
+st.image("./header_contact_us.png")
 st.sidebar.header("Contact us")
 st.write(
     """

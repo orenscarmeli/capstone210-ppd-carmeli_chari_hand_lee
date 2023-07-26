@@ -1,27 +1,35 @@
 import streamlit as st
-import gzip
-import nibabel as nb
-import os
 
-dirname = os.path.dirname(os.path.realpath('__file__'))
+st.set_page_config(page_title="Imaging Model",
+                   page_icon="./page_logo.png")
 
+st.image("./header_imaging.png")
 
-st.set_page_config(page_title="Neuroimaging Model", page_icon="")
-
-st.markdown("# Neuroimaging Model")
-st.sidebar.header("Neuroimaging Model")
+st.sidebar.header("Imaging Model")
 st.write(
     """
-    - fMRI must have been collected while subject had eyes closed
-    - provide examples of acceptable/unacceptable images?
+    Upload an fMRI image to be used to predict for PPD
+    - fMRI must have been collected while lying still with eyes closed 
+    - Please note any head movement by 2 mm or 2 degrees could negatively impact model performance
+    - Include color/file type/size specifications
     
     """
 )
 
-uploaded_file = st.file_uploader('Upload fMRI file (compressed .gz or /nii):', type=['gz', 'nii'])
-if uploaded_file is not None:
-    file_details = {"FileName":uploaded_file.name, "FileType":uploaded_file.type}
-    st.write(file_details)
-    with open(os.path.join('./imageUploads', uploaded_file.name), "wb") as f: 
-        f.write(uploaded_file.getbuffer())         
-    st.success("Uploaded File")
+st.write("Include final performance metrics.")
+
+st.file_uploader('Upload fMRI file (specify format):')
+
+st.divider()
+
+# st.image("./imaging_good-example.png")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.write("Example of an acceptable image:")
+    st.image('./imaging_good-example.png')
+with col2:
+    st.write("")
+with col3:
+    st.write("Example of a poor image:")

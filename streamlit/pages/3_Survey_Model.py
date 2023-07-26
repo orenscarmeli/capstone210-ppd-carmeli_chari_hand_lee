@@ -53,13 +53,18 @@ from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import SMOTE
 from collections import Counter
 import pydeck as pdk
+import smtplib
+from email.message import EmailMessage
 
 
 
-st.set_page_config(page_title="Prediction generator", page_icon="")
+st.set_page_config(page_title="Survey Model",
+                   page_icon="./page_logo.png")
 
-st.markdown("# Prediction generator")
-st.sidebar.header("Prediction generator")
+st.image("./header_survey.png")
+
+
+st.sidebar.header("Survey Model")
 st.write(
     """This generator asks questions predetermined to be relevant for predicting depression and uses responses in our trained model to predict depression"""
 )
@@ -242,6 +247,32 @@ def create_model():
     model.fit(x_train, y_train)
     return model
 
+# def send_email(subject, body):
+#     """
+#     Forwards survey prediction and answers to Velvaere email.
+#     """
+#     email_address = 'contact.velvaere@gmail.com'
+#     email_password = 'mids2023!!'
+    
+#     msg = EmailMessage()
+#     msg.set_content(body)
+
+#     msg['Subject'] = subject
+#     msg['From'] = email_address
+#     msg['To'] = email_address
+
+#     try:
+#         # Connect to the SMTP server and send the email
+#         server = smtplib.SMTP('smtp.gmail.com', 587)
+#         server.starttls()
+#         server.login(email_address, email_password)
+#         server.send_message(msg)
+#         server.quit()
+#         return True
+#     except Exception as e:
+#         print(f"Failed to send email: {e}")
+#         return False
+
 # Main function
 def main():
     model = create_model()
@@ -294,16 +325,29 @@ def main():
 
         # Convert prediction label to description
         if prediction[0] == 1:
-            prediction_text = "Likely to have Postpartum Depression"
+            prediction_text = " __% likely to have Postpartum Depression. We recommend reaching out to your healthcare provider for further evaluation."
         else:
-            prediction_text = "Not likely to have Postpartum Depression"
+            prediction_text = "__% likely to have Postpartum Depression. Our model predicts a low likelihood of PPD but please reach out to your healthcare provider if you feel the need for further evaluation."
 
         submit = st.form_submit_button(label='Submit')
 
     # Show the prediction after submission
     if submit:
         st.write("**Prediction:**", prediction_text)
+    
+    # # Provide user with turnaround window and confirmation of answer submission
+    # if submit:
+    #     # st.write("Thank you for your submission! A physician will review your answers and a member of our team will reach out within 2 business days.")
+    #     # Send the prediction result and answers to the specified email address
+    #     to_email = 'velvaere@gmail.com'
+    #     subject = 'Postpartum Depression Prediction Results'
+    #     body = f"Prediction: {prediction_text}\n\nAnswers: {answers}"
+    #     email_sent = send_email(subject, body)
 
+    #     if email_sent:
+    #         st.write("Thank you for your submission! A physician will review your answers and a member of our team will reach out within 2 business days.")
+    #     else:
+    #         st.error("Failed to send the email.")
 
 
 
