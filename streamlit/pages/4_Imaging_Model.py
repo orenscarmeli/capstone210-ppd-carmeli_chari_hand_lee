@@ -1,7 +1,7 @@
 import streamlit as st
+import os
 
-st.set_page_config(page_title="Imaging Model",
-                   page_icon="./page_logo.png")
+st.set_page_config(page_title="Imaging Model", page_icon="./page_logo.png")
 
 st.image("./header_imaging.png")
 
@@ -18,7 +18,16 @@ st.write(
 
 st.write("Include final performance metrics.")
 
-st.file_uploader('Upload fMRI file (specify format):')
+
+uploaded_file = st.file_uploader(
+    "Upload fMRI file (.nii compressed as .gz):", type=["gz"]
+)
+if uploaded_file is not None:
+    file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
+    st.write(file_details)
+    with open(os.path.join("./imageUploads", uploaded_file.name), "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    st.success("Uploaded File")
 
 st.divider()
 
@@ -28,7 +37,7 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.write("Example of an acceptable image:")
-    st.image('./imaging_good-example.png')
+    st.image("./imaging_good-example.png")
 with col2:
     st.write("")
 with col3:

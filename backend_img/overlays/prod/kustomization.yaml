@@ -1,0 +1,10 @@
+---
+namespace: w210jhand
+# bases:
+#   - ../../bases
+resources:
+  - virtual-service.yaml
+patches:
+  - path: patch-deployment-w210.yaml
+    target:
+      kind: Deployment
