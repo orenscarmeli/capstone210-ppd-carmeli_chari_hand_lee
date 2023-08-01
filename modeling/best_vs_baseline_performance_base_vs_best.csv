@@ -1,36 +1,36 @@
 ,model,grouping,variable,value,context
-0,All Obs,Depressed (No),precision,0.9492868462757528,best
-1,All Obs,Depressed (Yes),precision,0.3693379790940767,best
-2,All Obs,Macro Avg,precision,0.6593124126849147,best
-3,All Obs,Weighted Avg,precision,0.8856384877083642,best
-4,Obs w/ 2+ Dep Screener,Depressed (No),precision,0.9307568438003221,best
-5,Obs w/ 2+ Dep Screener,Depressed (Yes),precision,0.375968992248062,best
-6,Obs w/ 2+ Dep Screener,Macro Avg,precision,0.653362918024192,best
-7,Obs w/ 2+ Dep Screener,Weighted Avg,precision,0.8423947286497915,best
+0,All Obs,Depressed (No),precision,0.957166392092257,best
+1,All Obs,Depressed (Yes),precision,0.3522388059701492,best
+2,All Obs,Macro Avg,precision,0.6547025990312031,best
+3,All Obs,Weighted Avg,precision,0.890776663466848,best
+4,Obs w/ 2+ Dep Screener,Depressed (No),precision,0.9458987783595113,best
+5,Obs w/ 2+ Dep Screener,Depressed (Yes),precision,0.3562091503267974,best
+6,Obs w/ 2+ Dep Screener,Macro Avg,precision,0.6510539643431543,best
+7,Obs w/ 2+ Dep Screener,Weighted Avg,precision,0.8519777909595342,best
 8,Obs w/ <2 Dep Screener,Depressed (No),precision,0.9672386895475819,best
 9,Obs w/ <2 Dep Screener,Depressed (Yes),precision,0.3103448275862069,best
 10,Obs w/ <2 Dep Screener,Macro Avg,precision,0.6387917585668944,best
 11,Obs w/ <2 Dep Screener,Weighted Avg,precision,0.9378255315493114,best
-12,All Obs,Depressed (No),recall,0.8687454677302393,best
-13,All Obs,Depressed (Yes),recall,0.6235294117647059,best
-14,All Obs,Macro Avg,recall,0.7461374397474726,best
-15,All Obs,Weighted Avg,recall,0.841833440929632,best
-16,Obs w/ 2+ Dep Screener,Depressed (No),recall,0.7821380243572396,best
-17,Obs w/ 2+ Dep Screener,Depressed (Yes),recall,0.6928571428571428,best
-18,Obs w/ 2+ Dep Screener,Macro Avg,recall,0.7374975836071912,best
-19,Obs w/ 2+ Dep Screener,Weighted Avg,recall,0.7679180887372014,best
+12,All Obs,Depressed (No),recall,0.8426395939086294,best
+13,All Obs,Depressed (Yes),recall,0.6941176470588235,best
+14,All Obs,Macro Avg,recall,0.7683786204837264,best
+15,All Obs,Weighted Avg,recall,0.8263395739186572,best
+16,Obs w/ 2+ Dep Screener,Depressed (No),recall,0.7334235453315291,best
+17,Obs w/ 2+ Dep Screener,Depressed (Yes),recall,0.7785714285714286,best
+18,Obs w/ 2+ Dep Screener,Macro Avg,recall,0.7559974869514788,best
+19,Obs w/ 2+ Dep Screener,Weighted Avg,recall,0.7406143344709898,best
 20,Obs w/ <2 Dep Screener,Depressed (No),recall,0.96875,best
 21,Obs w/ <2 Dep Screener,Depressed (Yes),recall,0.3,best
 22,Obs w/ <2 Dep Screener,Macro Avg,recall,0.634375,best
 23,Obs w/ <2 Dep Screener,Weighted Avg,recall,0.9388059701492537,best
-24,All Obs,Depressed (No),f1-score,0.9072321090496024,best
-25,All Obs,Depressed (Yes),f1-score,0.4638949671772429,best
-26,All Obs,Macro Avg,f1-score,0.6855635381134226,best
-27,All Obs,Weighted Avg,f1-score,0.8585766448027973,best
-28,Obs w/ 2+ Dep Screener,Depressed (No),f1-score,0.85,best
-29,Obs w/ 2+ Dep Screener,Depressed (Yes),f1-score,0.4874371859296482,best
-30,Obs w/ 2+ Dep Screener,Macro Avg,f1-score,0.668718592964824,best
-31,Obs w/ 2+ Dep Screener,Weighted Avg,f1-score,0.7922539317749154,best
+24,All Obs,Depressed (No),f1-score,0.896259159274971,best
+25,All Obs,Depressed (Yes),f1-score,0.46732673267326724,best
+26,All Obs,Macro Avg,f1-score,0.6817929459741191,best
+27,All Obs,Weighted Avg,f1-score,0.8491845869558686,best
+28,Obs w/ 2+ Dep Screener,Depressed (No),f1-score,0.826219512195122,best
+29,Obs w/ 2+ Dep Screener,Depressed (Yes),f1-score,0.48878923766816146,best
+30,Obs w/ 2+ Dep Screener,Macro Avg,f1-score,0.6575043749316417,best
+31,Obs w/ 2+ Dep Screener,Weighted Avg,f1-score,0.7724763512920795,best
 32,Obs w/ <2 Dep Screener,Depressed (No),f1-score,0.9679937548790009,best
 33,Obs w/ <2 Dep Screener,Depressed (Yes),f1-score,0.3050847457627119,best
 34,Obs w/ <2 Dep Screener,Macro Avg,f1-score,0.6365392503208563,best
@@ -47,14 +47,14 @@
 45,Obs w/ <2 Dep Screener,Depressed (Yes),support,30.0,best
 46,Obs w/ <2 Dep Screener,Macro Avg,support,670.0,best
 47,Obs w/ <2 Dep Screener,Weighted Avg,support,670.0,best
-48,All Obs,Depressed (No),accuracy,0.841833440929632,best
-49,All Obs,Depressed (Yes),accuracy,0.841833440929632,best
-50,All Obs,Macro Avg,accuracy,0.841833440929632,best
-51,All Obs,Weighted Avg,accuracy,0.841833440929632,best
-52,Obs w/ 2+ Dep Screener,Depressed (No),accuracy,0.7679180887372014,best
-53,Obs w/ 2+ Dep Screener,Depressed (Yes),accuracy,0.7679180887372014,best
-54,Obs w/ 2+ Dep Screener,Macro Avg,accuracy,0.7679180887372014,best
-55,Obs w/ 2+ Dep Screener,Weighted Avg,accuracy,0.7679180887372014,best
+48,All Obs,Depressed (No),accuracy,0.8263395739186572,best
+49,All Obs,Depressed (Yes),accuracy,0.8263395739186572,best
+50,All Obs,Macro Avg,accuracy,0.8263395739186572,best
+51,All Obs,Weighted Avg,accuracy,0.8263395739186572,best
+52,Obs w/ 2+ Dep Screener,Depressed (No),accuracy,0.7406143344709898,best
+53,Obs w/ 2+ Dep Screener,Depressed (Yes),accuracy,0.7406143344709898,best
+54,Obs w/ 2+ Dep Screener,Macro Avg,accuracy,0.7406143344709898,best
+55,Obs w/ 2+ Dep Screener,Weighted Avg,accuracy,0.7406143344709898,best
 56,Obs w/ <2 Dep Screener,Depressed (No),accuracy,0.9388059701492537,best
 57,Obs w/ <2 Dep Screener,Depressed (Yes),accuracy,0.9388059701492537,best
 58,Obs w/ <2 Dep Screener,Macro Avg,accuracy,0.9388059701492537,best
