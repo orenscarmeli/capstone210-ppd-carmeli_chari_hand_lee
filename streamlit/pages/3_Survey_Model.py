@@ -121,13 +121,14 @@ def main():
             # DMDBORN4: is_usa_born
             "question": "Were you born in the United States?",
             "options": ["Dummy", "Yes", "No"],
-            "option_codes": [np.nan, 1, 2],
+            "option_codes": [None, 1, 2],
             "var_code": "is_usa_born",
         },
         {
             # HIQ011: have_health_insurance
             "question": "Are you covered by health insurance or some kind of health care plan?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "have_health_insurance",
         },
         {
@@ -141,12 +142,14 @@ def main():
             # RHQ031: regular_periods
             "question": "Have you had at least one menstrual period in the past 12 months?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "regular_periods",
         },
         {
             # RHQ540: horomones_not_bc
             "question": "Have you ever used female hormones such as estrogen and progesterone? Please include any forms such as pills, cream, patch, and inejctables, but do not include birth controls methods or use for infertility.",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "horomones_not_bc",
         },
         {
@@ -160,12 +163,14 @@ def main():
                 "Within the last 5 years",
                 "5 years ago or more",
             ],
+            "option_codes": [None, 0, 1, 2, 3, 4],
             "var_code": "time_since_last_healthcare",
         },
         {
             # HUQ090: seen_mental_health_professional
             "question": "During the past 12 months, have you seen or talked to a mental health professional about your health?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "seen_mental_health_professional",
         },
         {
@@ -178,6 +183,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "little_interest_in_doing_things",
         },
         {
@@ -190,6 +196,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "feeling_down_depressed_hopeless",
         },
         {
@@ -202,6 +209,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "trouble_falling_or_staying_asleep",
         },
         {
@@ -214,6 +222,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "feeling_tired_or_having_little_energy",
         },
         {
@@ -226,6 +235,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "poor_appetitie_or_overeating",
         },
         {
@@ -238,6 +248,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "feeling_bad_about_yourself",
         },
         {
@@ -250,6 +261,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "trouble_concentrating",
         },
         {
@@ -262,6 +274,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "moving_or_speaking_to_slowly_or_fast",
         },
         {
@@ -274,6 +287,7 @@ def main():
                 "More than half the days",
                 "Nearly every day",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "thoughts_you_would_be_better_off_dead",
         },
         {
@@ -286,6 +300,7 @@ def main():
                 "Very difficult",
                 "Extremely difficult",
             ],
+            "option_codes": [None, 0, 1, 2, 3],
             "var_code": "difficult_doing_daytoday_tasks",
         },
         {
@@ -305,66 +320,77 @@ def main():
                 "3-6 times in the last year",
                 "1-2 times in the last year",
             ],
+            "option_codes": [None, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             "var_code": "times_with_12plus_alc",
         },
         {
             # BPQ080: high_cholesterol
             "question": "Have you ever been told by a health care professional that your blood cholesterol level was high?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "high_cholesterol",
         },
         {
             # BPQ090D: cholesterol_prescription
             "question": "Have you ever been told by a health care professional to take prescribed medicine to lower blood cholesterol levels?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "cholesterol_prescription",
         },
         {
             # BPQ020: high_bp
             "question": "Has a health professional ever told you that you have/had hypertension (high blood pressure)?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "high_bp",
         },
         {
             # PAQ665: moderate_recreation
             "question": "In a typical week, do you do any moderate intensity recreational activities that cause a small increase in breathing/heart rate such as brisk walking, bicycling, or swimming for at least 10 minutes continuously?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "moderate_recreation",
         },
         {
             # PAQ670: count_days_moderate_recreational_activity
             "question": "In a typical week, on how many days do you do moderate intensity recreational activities?",
             "options": ["Dummy", "1", "2", "3", "4", "5", "6", "7"],
+            "option_codes": [None, 1, 2, 3, 4, 5, 6, 7],
             "var_code": "count_days_moderate_recreational_activity",
         },
         {
             # PAQ650: vigorous_recreation
-            "question": "In a typical wekk, do you do any vigorous intensity recreational activities that cause large increases in breathing/heart rate like running or basketball for at least 10 minutes continuously?",
+            "question": "In a typical week, do you do any vigorous intensity recreational activities that cause large increases in breathing/heart rate like running or basketball for at least 10 minutes continuously?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "vigorous_recreation",
         },
         {
             # MCQ160m: thyroid_issues
             "question": "Has a health professional ever told you that you had a thyroid problem?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "thyroid_issues",
         },
         {
             # MCQ160a: arthritis
             "question": "Has a health professional ever told you that you have/had arthritis",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "arthritis",
         },
         {
             # MCQ160f: stroke
             "question": "Has a health professional ever told you that you had a stroke?",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "stroke",
         },
         {
             # MCQ010: asthma
             "question": "Has a health professional ever told you that you have asthma??",
             "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
             "var_code": "asthma",
         },
     ]
@@ -440,12 +466,14 @@ def main():
                         "option_codes"
                     )[question["options"].index(answer)]
 
+        # remove nulls
+        survey_answers_dict = {k: v for k, v in survey_answers_dict.items() if v}
+        print(survey_answers_dict)
+
         # Make prediction using the model using API
         prediction = st.form_submit_button(
             label="Submit", on_click=PostRequestSurveyAPI, args=(survey_answers_dict,)
         )
-
-        print(survey_answers_dict)
         print(prediction)
 
         # Convert prediction label to description
