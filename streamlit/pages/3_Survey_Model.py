@@ -56,19 +56,27 @@ import pydeck as pdk
 import smtplib
 from email.message import EmailMessage
 
-
+hide_default_format = """
+       <style>
+       #MainMenu {visibility: hidden; }
+       footer {visibility: hidden;}
+       </style>
+       """
 
 st.set_page_config(page_title="Survey Model",
                    page_icon="./page_logo.png")
+
+st.markdown(hide_default_format, unsafe_allow_html=True)
 
 st.image("./header_survey.png")
 
 
 st.sidebar.header("Survey Model")
 st.write(
-    """This generator asks questions predetermined to be relevant for predicting depression and uses responses in our trained model to predict depression"""
+    """This generator asks questions predetermined to be relevant for predicting depression and uses responses in our trained model to predict depression."""
 )
 
+st.write("Please view our privacy policy for details regarding data prior to using the models.")
 
 # Function to preprocess data and generate test/train split
 def get_model_data(original_df, columns, test_size_prop=0.2):
@@ -247,53 +255,171 @@ def create_model():
     model.fit(x_train, y_train)
     return model
 
-# def send_email(subject, body):
-#     """
-#     Forwards survey prediction and answers to Velvaere email.
-#     """
-#     email_address = 'contact.velvaere@gmail.com'
-#     email_password = 'mids2023!!'
-    
-#     msg = EmailMessage()
-#     msg.set_content(body)
 
-#     msg['Subject'] = subject
-#     msg['From'] = email_address
-#     msg['To'] = email_address
-
-#     try:
-#         # Connect to the SMTP server and send the email
-#         server = smtplib.SMTP('smtp.gmail.com', 587)
-#         server.starttls()
-#         server.login(email_address, email_password)
-#         server.send_message(msg)
-#         server.quit()
-#         return True
-#     except Exception as e:
-#         print(f"Failed to send email: {e}")
-#         return False
 
 # Main function
 def main():
     model = create_model()
 
-    # st.title("Postpartum Depression Screening")
-    # st.write("Answer the following questions to predict postpartum depression")
 
-    # Define the questions and answer options
+    # Provide the questions and answer options
+######  'num_dep_screener_0','weight_lbs_over_height_in_ratio' 
 
     questions = [
         {
+            #RIDAGEYR: age_in_years
+            "question": "How old are you? (Please select the closest option)",
+            "options": list(range(0,86))
+        },
+        {
+            #height: for weight_lbs_over_height_in_ratio
+            "question": "What is your height in inches? (Please select the closest option)",
+            "options": list(range(48,82)) 
+        },
+        {
+            #weight: for weight_lbs_over_height_in_ratio
+            "question": "What is your weight in pounds? (Please select the closest option)",
+            "options": list(range(75,494)) 
+        },
+        {
+            #DMDBORN4: is_usa_born
+            "question": "Were you born in the United States?",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #HIQ011: have_health_insurance
+            "question": "Are you covered by health insurance or some kind of health care plan?",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #RHQ197: months_since_birth
+            "question": "How many months ago did you have your baby? (Please select the closest option)",
+            "options": list(range(1,28))
+        },
+        {
+            #RHQ031: regular_periods
+            "question": "Have you had at least one menstrual period in the past 12 months?",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #RHQ540: horomones_not_bc
+            "question": "Have you ever used female hormones such as estrogen and progesterone? Please include any forms such as pills, cream, patch, and inejctables, but do not include birth controls methods or use for infertility.",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #HUD062: time_since_last_healthcare
+            "question": "About how long has it been since you last saw a health care professional about your health for any reason?",
+            "options": ["Dummy","Never","Within the past year","Within the last 2 years","Within the last 5 years","5 years ago or more"]
+        },
+        {
+            #HUQ090: seen_mental_health_professional 
+            "question": "During the past 12 months, have you seen or talked to a mental health professional about your health?",
+            "options": ["Dummy","Yes","No"]
+        },
+        {
+            #DPQ010: little_interest_in_doing_things 
             "question": "Over the last 2 weeks, how often have you been bothered by the following problems: little interest or pleasure in doing things?",
-            "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
         },
         {
+            #DPQ020: feeling_down_depressed_hopeless 
             "question": "Over the last 2 weeks, how often have you been bothered by feeling down, depressed, or hopeless?",
-            "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
         },
         {
+            #DPQ030: trouble_falling_or_staying_asleep 
             "question": "Over the last 2 weeks, how often have you been bothered by trouble falling or staying asleep, or sleeping too much?",
-            "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+        {
+            #DPQ040: feeling_tired_or_having_little_energy 
+            "question": "Over the last 2 weeks, how often have you been bothered by feeling tired or having little energy?",
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+        {
+            #DPQ050: poor_appetitie_or_overeating 
+            "question": "Over the last 2 weeks, how often have you been bothered by having poor appetite or overeating?",
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+        {
+            #DPQ060: feeling_bad_about_yourself 
+            "question": "Over the last 2 weeks, how often have you been bothered by feeling bad about yourself - or that you are a failure or have let yourself or your family down?",
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+        {
+            #DPQ070: trouble_concentrating 
+            "question": "Over the last 2 weeks, how often have you been bothered by trouble concentrating on things, such as reading the newspaper or watching TV?",
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+        {
+            #DPQ080: moving_or_speaking_to_slowly_or_fast 
+            "question": "Over the last 2 weeks, how often have you been bothered by moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?",
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+        {
+            #DPQ090: thoughts_you_would_be_better_off_dead 
+            "question": "Over the last 2 weeks, how often have you been bothered by thoughts that you would be better off dead or of hurting yourself in some way?",
+            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"]
+        },
+        {
+            #DPQ100: difficult_doing_daytoday_tasks 
+            "question": "How difficult have these problems made it for you to do your work, take care of things at home, or get along with people?",
+            "options": ["Dummy","Not at all difficult","Somewhat difficult","Very difficult","Extremely difficult"]
+        },
+        {
+            #ALQ290: times_with_12plus_alc 
+            "question": "During the past 12 months, about how often did you have 12 or more drinks in a single day?",
+            "options": ["Dummy","Never in the last year","Every day","Nearly every day","3-4 times a week","2 times a week","Once a week","2-3 times a month","Once a month", "7-11 times in the last year","3-6 times in the last year","1-2 times in the last year"]
+        },
+        {
+            #BPQ080: high_cholesterol
+            "question": "Have you ever been told by a health care professional that your blood cholesterol level was high?",
+            "options": ["Dummy","Yes","No"]
+        },
+        {
+            #BPQ090D: cholesterol_prescription
+            "question": "Have you ever been told by a health care professional to take prescribed medicine to lower blood cholesterol levels?",
+            "options": ["Dummy","Yes","No"]
+        },
+        {
+            #BPQ020: high_bp
+            "question": "Has a health professional ever told you that you have/had hypertension (high blood pressure)?",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #PAQ665: moderate_recreation
+            "question": "In a typical week, do you do any moderate intensity recreational activities that cause a small increase in breathing/heart rate such as brisk walking, bicycling, or swimming for at least 10 minutes continuously?",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #PAQ670: count_days_moderate_recreational_activity
+            "question": "In a typical week, on how many days do you do moderate intensity recreational activities?",
+            "options": ["Dummy","1","2","3","4","5","6","7"] 
+        },
+        {
+            #PAQ650: vigorous_recreation
+            "question": "In a typical wekk, do you do any vigorous intensity recreational activities that cause large increases in breathing/heart rate like running or basketball for at least 10 minutes continuously?",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #MCQ160m: thyroid_issues
+            "question": "Has a health professional ever told you that you had a thyroid problem?",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #MCQ160a: arthritis
+            "question": "Has a health professional ever told you that you have/had arthritis",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #MCQ160f: stroke
+            "question": "Has a health professional ever told you that you had a stroke?",
+            "options": ["Dummy","Yes","No"] 
+        },
+        {
+            #MCQ010: stroke
+            "question": "Has a health professional ever told you that you have asthma??",
+            "options": ["Dummy","Yes","No"] 
         }
     ]
 
@@ -302,24 +428,46 @@ def main():
         answers = []
         # Add invisible dummy radio button to hide preselection
         st.markdown(
-            """
-        <style>
-            div[role=radiogroup] label:first-of-type {
-                visibility: hidden;
-                height: 0px;
-            }
-        </style>
-        """,
-            unsafe_allow_html=True,
-        )
+        """
+    <style>
+        div[role=radiogroup] label:first-of-type {
+            visibility: hidden;
+            height: 0px;
+        }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
 
         # Present questions with answer options
         for question in questions:
-            answer = st.radio(question["question"], question["options"])
-            answer_int = question["options"].index(answer)
-            answers.append(answer_int)
+            if question["question"] == "How old are you? (Please select the closest option)" or\
+                question["question"] == "What is your height in inches? (Please select the closest option)" or \
+                question["question"] == "What is your weight in pounds? (Please select the closest option)" or \
+                question["question"] == "How many months ago did you have your baby? (Please select the closest option)":
+                answer = st.selectbox(question["question"], question["options"])
+                answers.append(answer)
+            elif question["question"] == "About how long has it been since you last saw a health care professional about your health for any reason?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by the following problems: little interest or pleasure in doing things?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by feeling down, depressed, or hopeless?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by trouble falling or staying asleep, or sleeping too much?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by feeling tired or having little energy?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by having poor appetite or overeating?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by feeling bad about yourself - or that you are a failure or have let yourself or your family down?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by trouble concentrating on things, such as reading the newspaper or watching TV?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?" or\
+                    question["question"] == "Over the last 2 weeks, how often have you been bothered by thoughts that you would be better off dead or of hurting yourself in some way?" or\
+                    question["question"] == "How difficult have these problems made it for you to do your work, take care of things at home, or get along with people?" or\
+                    question["question"] == "During the past 12 months, about how often did you have 12 or more drinks in a single day?":
+                answer = st.radio(question["question"], question["options"]) 
+                answer_int = question["options"].index(answer)-1
+                answers.append(answer_int)
+            else:
+                answer = st.radio(question["question"], question["options"])
+                answer_int = question["options"].index(answer)
+                answers.append(answer_int)
 
-        # Make prediction using the model
+        # Generate predictions 
         feature_matrix = [answers]  # Convert answers to a feature matrix
         prediction = model.predict(feature_matrix)
 
@@ -331,26 +479,14 @@ def main():
 
         submit = st.form_submit_button(label='Submit')
 
-    # Show the prediction after submission
+    # # Show the prediction after submission
     if submit:
         st.write("**Prediction:**", prediction_text)
+
     
-    # # Provide user with turnaround window and confirmation of answer submission
-    # if submit:
-    #     # st.write("Thank you for your submission! A physician will review your answers and a member of our team will reach out within 2 business days.")
-    #     # Send the prediction result and answers to the specified email address
-    #     to_email = 'velvaere@gmail.com'
-    #     subject = 'Postpartum Depression Prediction Results'
-    #     body = f"Prediction: {prediction_text}\n\nAnswers: {answers}"
-    #     email_sent = send_email(subject, body)
 
-    #     if email_sent:
-    #         st.write("Thank you for your submission! A physician will review your answers and a member of our team will reach out within 2 business days.")
-    #     else:
-    #         st.error("Failed to send the email.")
-
-
-
-# Run the app
 if __name__ == "__main__":
     main()
+
+
+
