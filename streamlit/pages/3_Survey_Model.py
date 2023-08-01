@@ -4,57 +4,16 @@ from os import getcwd
 from os.path import exists, join
 
 import joblib
-from sklearn.impute import SimpleImputer
-from sklearn.model_selection import GridSearchCV, train_test_split
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import RobustScaler
-from sklearn.svm import SVR
 import pandas as pd
 import numpy as np
-from sklearn import preprocessing
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
-from sklearn.naive_bayes import BernoulliNB
-from sklearn.naive_bayes import GaussianNB
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.model_selection import GridSearchCV
 
-from sklearn.linear_model import LogisticRegression, LinearRegression
-import warnings
-from sklearn import metrics
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import Normalizer
-from sklearn.decomposition import PCA
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import ExtraTreesClassifier
-import matplotlib.pyplot as plt
-from sklearn.ensemble import  GradientBoostingClassifier
-# import xgboost as xgb
-import seaborn as sns
-from sklearn.metrics import confusion_matrix
-from sklearn.svm import SVC, LinearSVC 
-from sklearn.neural_network import MLPClassifier
-
-from sklearn.metrics import recall_score
-
-from sklearn import tree
-from sklearn.decomposition import PCA, SparsePCA
-
-from sklearn.mixture import GaussianMixture
-from sklearn.decomposition import PCA
 import json
 import pickle
-import warnings
-from sklearn.datasets import make_classification
-from imblearn.over_sampling import RandomOverSampler
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.over_sampling import SMOTE
 from collections import Counter
 import pydeck as pdk
 import smtplib
-from email.message import EmailMessage
+import requests
+
 
 hide_default_format = """
        <style>
@@ -63,8 +22,7 @@ hide_default_format = """
        </style>
        """
 
-st.set_page_config(page_title="Survey Model",
-                   page_icon="./page_logo.png")
+st.set_page_config(page_title="Survey Model", page_icon="./page_logo.png")
 
 st.markdown(hide_default_format, unsafe_allow_html=True)
 
@@ -76,479 +34,432 @@ st.write(
     """This generator asks questions predetermined to be relevant for predicting depression and uses responses in our trained model to predict depression."""
 )
 
-st.write("Please view our privacy policy for details regarding data prior to using the models.")
+st.write(
+    "Please view our privacy policy for details regarding data prior to using the models."
+)
 
-# Function to preprocess data and generate test/train split
-def get_model_data(original_df, columns, test_size_prop=0.2):
-    """
-    Function to build feature & indicator matrices for both train & test.
-    """
-    
-    # add target column (MDD)
-    cols_to_use = columns.copy()
-    cols_to_use.insert(0, 'MDD')
-    
-    df_to_use = original_df[cols_to_use]
-    
-    # Create test & train data
-    x = df_to_use.iloc[:,1:].values
-    y = df_to_use['MDD'].values
-    
-    # SimpleImputer() = fill in missing values
-    # note imputer may drop columns if no values exist for it
-    imputer = SimpleImputer(strategy='median')  
-    x = imputer.fit_transform(x)
 
-    # RobustScaler() = scale features to remove outliers
-    trans = RobustScaler()
-    x = trans.fit_transform(x)
+def PostRequestSurveyAPI(answer_dict):
+    url = "http://network-load-balancer-3ec3c60f32bd38c8.elb.us-west-1.amazonaws.com/predict"
+    myobj = {"surveys": [answer_dict]}
+    example_dict = {
+        "has_health_insurance": 1.0,
+        "difficult_doing_daytoday_tasks": 0.0,
+        "age_range_first_menstrual_period": 0,
+        "weight_change_intentional": 0,
+        "thoughts_you_would_be_better_off_dead": 0.0,
+        "little_interest_in_doing_things": 1.0,
+        "trouble_concentrating": 0.0,
+        "food_security_level_household": 2.0,
+        "general_health_condition": 4.0,
+        "monthly_poverty_index": 2.0,
+        "food_security_level_adult": 2.0,
+        "count_days_seen_doctor_12mo": 4.0,
+        "has_overweight_diagnosis": 1.0,
+        "feeling_down_depressed_hopeless": 0.0,
+        "count_minutes_moderate_recreational_activity": 15.0,
+        "have_liver_condition": 0,
+        "pain_relief_from_cardio_recoverytime": 1.0,
+        "education_level": 5.0,
+        "count_hours_worked_last_week": 40.0,
+        "age_in_years": 44.0,
+        "has_diabetes": 1.0,
+        "alcoholic_drinks_past_12mo": 5.0,
+        "count_lost_10plus_pounds": 3.0,
+        "days_nicotine_substitute_used": 0,
+        "age_with_angina_pectoris": 33.0,
+        "annual_healthcare_visit_count": 3.0,
+        "poor_appetitie_or_overeating": 1.0,
+        "feeling_bad_about_yourself": 0.0,
+        "has_tried_to_lose_weight_12mo": 0.0,
+        "count_days_moderate_recreational_activity": 2.0,
+        "count_minutes_moderate_sedentary_activity": 960.0,
+    }
+    try:
+        # TODO: swap with actual dictionary when update API
+        # x = requests.post(url, json=myobj)
+        x = requests.post(url, json=example_dict)
+        print("request successful")
+        print(x.json())
 
-    x_train, x_test, y_train, y_test = train_test_split(
-        x, 
-        y, 
-        test_size=test_size_prop, 
-        random_state=42
-    ) 
-    return x_train, x_test, y_train, y_test
-
-def create_model():
-    cdc_survey = pd.read_csv('/users/leej136/Downloads/cdc_nhanes_survey_responses_clean.csv')
-    all_columns = [
-    # Depression screener
-    'little_interest_in_doing_things',
-    'feeling_down_depressed_hopeless',
-    'trouble_falling_or_staying_asleep',
-    'feeling_tired_or_having_little_energy',
-    'poor_appetitie_or_overeating',
-    'feeling_bad_about_yourself',
-    'trouble_concentrating',
-    'moving_or_speaking_to_slowly_or_fast',
-    'thoughts_you_would_be_better_off_dead',
-    'difficult_doing_daytoday_tasks',
-    # Alcohol & smoking
-    'has_smoked_tabacco_last_5days',
-    'alcoholic_drinks_past_12mo', 
-    'drank_alc',
-    'alc_drinking_freq',
-    'alc_per_day',
-    'times_with_4or5_alc',
-    'times_with_8plus_alc',
-    'times_with_12plus_alc',
-    '4plus_alc_daily',
-    'days_4plus_drinks_occasion',
-    #Blood Pressure & Cholesterol
-    'high_bp',
-    'age_hypertension',
-    'hypertension_prescription',
-    'high_bp_prescription',
-    'high_cholesterol',
-    'cholesterol_prescription',
-    #Cardiovascular Health
-    'chest_discomfort',
-    # Diet & Nutrition
-    'how_healthy_is_your_diet',    
-    'count_lost_10plus_pounds',
-    'has_tried_to_lose_weight_12mo', 
-    'breastfed',
-    'milk_consumption_freq',
-    'govmnt_meal_delivery',
-    'nonhomemade_meals',
-    'fastfood_meals',
-    'readytoeat_meals',
-    'frozen_pizza',
-    #Food Security
-    'emergency_food_received',
-    'food_stamps_used',
-    'wic_benefit_used',
-    #Hospital Utilization & Access to Care
-    'general_health',
-    'regular_healthcare_place',
-    'time_since_last_healthcare',
-    'overnight_in_hospital',
-    'seen_mental_health_professional',
-    #Health Insurance
-    'have_health_insurance',
-    'have_private_insurance',
-    'plan_cover_prescriptions',
-    #Income
-    'family_poverty_level',
-    'family_poverty_level_category',
-    #Medical Conditions
-    'asthma',
-    'anemia_treatment',
-    'blood_transfusion',
-    'arthritis',
-    'heart_failure',
-    'coronary_heart_disease',
-    'angina_pectoris',
-    'heart_attack',
-    'stroke',
-    'thyroid_issues',
-    'respiratory_issues',
-    'abdominal_pain',
-    'gallstones',
-    'gallbladder_surgery',
-    'cancer',
-    'dr_recommend_lose_weight',
-    'dr_recommend_exercise',
-    'dr_recommend_reduce_salt',
-    'dr_recommend_reduce_fat',
-    'currently_losing_weight',
-    'currently_increase_exercise',
-    'currently_reducing_salt',
-    'currently_reducing_fat',
-    'metal_objects',
-    #Occupation
-    'hours_worked',
-    'over_35_hrs_worked',
-    'work_schedule',
-    #Physical Activity
-    'vigorous_work',
-    'walk_or_bicycle',
-    'vigorous_recreation',
-    'moderate_recreation',
-    # Physical health & Medical History
-    'count_days_seen_doctor_12mo',
-    'duration_last_healthcare_visit',        
-    'count_days_moderate_recreational_activity',   
-    'count_minutes_moderate_recreational_activity',
-    'count_minutes_moderate_sedentary_activity',
-    'general_health_condition',    
-    'has_diabetes',
-    'has_overweight_diagnosis',  
-    #Reproductive Health
-    'regular_periods',
-    'age_last_period',
-    'try_pregnancy_1yr',
-    'see_dr_fertility',
-    'pelvic_infection',
-    'pregnant_now',
-    'pregnancy_count',
-    'diabetes_pregnancy',
-    'delivery_count',
-    'live_birth_count',
-    'age_at_first_birth',
-    'age_at_last_birth',
-    'months_since_birth',
-    'horomones_not_bc',
-    #Smoking
-    'smoked_100_cigs',
-    'currently_smoke',
-    #Weight History
-    'height_in',
-    'weight_lbs',
-    'attempt_weight_loss_1yr',
-    # Demographic data
-    'food_security_level_household',   
-    'food_security_level_adult',    
-    'monthly_poverty_index_category',
-    'monthly_poverty_index',
-    'count_hours_worked_last_week',
-    'age_in_years',   
-    'education_level',
-    'is_usa_born',    
-    'has_health_insurance',
-    'has_health_insurance_gap'   
-]
-    x_train, x_test, y_train, y_test = get_model_data(cdc_survey, all_columns[0:3])
-    model = LogisticRegression()
-    model.fit(x_train, y_train)
-    return model
-
+        prediction = x.json()["predictions"][0]["prediction"]
+        print(f"prediction is {prediction}")
+    except Exception as e:
+        print(e)
+        prediction = 0
+    return prediction
 
 
 # Main function
 def main():
-    model = create_model()
-
-
     # Provide the questions and answer options
-######  'num_dep_screener_0','weight_lbs_over_height_in_ratio' 
+    ######  'num_dep_screener_0','weight_lbs_over_height_in_ratio'
 
     questions = [
         {
-            #RIDAGEYR: age_in_years
+            # RIDAGEYR: age_in_years
             "question": "How old are you? (Please select the closest option)",
-            "options": list(range(0,86)),
+            "options": list(range(0, 86)),
             "option_is_continuous": True,
-            "var_code": "age_in_years"
+            "var_code": "age_in_years",
         },
         {
-            #height: height_in for weight_lbs_over_height_in_ratio
+            # height: height_in for weight_lbs_over_height_in_ratio
             "question": "What is your height in inches? (Please select the closest option)",
-            "options": list(range(48,82)),
+            "options": list(range(48, 82)),
             "option_is_continuous": True,
-            "var_code": "height_in" 
+            "var_code": "height_in",
         },
         {
-            #weight: weight_lbs for weight_lbs_over_height_in_ratio
+            # weight: weight_lbs for weight_lbs_over_height_in_ratio
             "question": "What is your weight in pounds? (Please select the closest option)",
-            "options": list(range(75,494)),
+            "options": list(range(75, 494)),
             "option_is_continuous": True,
-            "var_code": "weight_lbs"  
+            "var_code": "weight_lbs",
         },
         {
-            #DMDBORN4: is_usa_born
+            # DMDBORN4: is_usa_born
             "question": "Were you born in the United States?",
-            "options": ["Dummy","Yes","No"],
+            "options": ["Dummy", "Yes", "No"],
             "option_codes": [np.nan, 1, 2],
-            "var_code": "is_usa_born"
+            "var_code": "is_usa_born",
         },
         {
-            #HIQ011: have_health_insurance
+            # HIQ011: have_health_insurance
             "question": "Are you covered by health insurance or some kind of health care plan?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "have_health_insurance"  
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "have_health_insurance",
         },
         {
-            #RHQ197: months_since_birth
+            # RHQ197: months_since_birth
             "question": "How many months ago did you have your baby? (Please select the closest option)",
-            "options": list(range(1,28)),
+            "options": list(range(1, 28)),
             "option_is_continuous": True,
-            "var_code": "months_since_birth" 
+            "var_code": "months_since_birth",
         },
         {
-            #RHQ031: regular_periods
+            # RHQ031: regular_periods
             "question": "Have you had at least one menstrual period in the past 12 months?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "regular_periods" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "regular_periods",
         },
         {
-            #RHQ540: horomones_not_bc
+            # RHQ540: horomones_not_bc
             "question": "Have you ever used female hormones such as estrogen and progesterone? Please include any forms such as pills, cream, patch, and inejctables, but do not include birth controls methods or use for infertility.",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "horomones_not_bc" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "horomones_not_bc",
         },
         {
-            #HUD062: time_since_last_healthcare
+            # HUD062: time_since_last_healthcare
             "question": "About how long has it been since you last saw a health care professional about your health for any reason?",
-            "options": ["Dummy","Never","Within the past year","Within the last 2 years","Within the last 5 years","5 years ago or more"],
-            "option_codes": [np.nan, 0, 1, 2, 3, 4],
-            "var_code": "time_since_last_healthcare" 
+            "options": [
+                "Dummy",
+                "Never",
+                "Within the past year",
+                "Within the last 2 years",
+                "Within the last 5 years",
+                "5 years ago or more",
+            ],
+            "var_code": "time_since_last_healthcare",
         },
         {
-            #HUQ090: seen_mental_health_professional 
+            # HUQ090: seen_mental_health_professional
             "question": "During the past 12 months, have you seen or talked to a mental health professional about your health?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "seen_mental_health_professional" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "seen_mental_health_professional",
         },
         {
-            #DPQ010: little_interest_in_doing_things 
+            # DPQ010: little_interest_in_doing_things
             "question": "Over the last 2 weeks, how often have you been bothered by the following problems: little interest or pleasure in doing things?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "little_interest_in_doing_things" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "little_interest_in_doing_things",
         },
         {
-            #DPQ020: feeling_down_depressed_hopeless 
+            # DPQ020: feeling_down_depressed_hopeless
             "question": "Over the last 2 weeks, how often have you been bothered by feeling down, depressed, or hopeless?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "feeling_down_depressed_hopeless" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "feeling_down_depressed_hopeless",
         },
         {
-            #DPQ030: trouble_falling_or_staying_asleep 
+            # DPQ030: trouble_falling_or_staying_asleep
             "question": "Over the last 2 weeks, how often have you been bothered by trouble falling or staying asleep, or sleeping too much?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "trouble_falling_or_staying_asleep" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "trouble_falling_or_staying_asleep",
         },
         {
-            #DPQ040: feeling_tired_or_having_little_energy 
+            # DPQ040: feeling_tired_or_having_little_energy
             "question": "Over the last 2 weeks, how often have you been bothered by feeling tired or having little energy?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "feeling_tired_or_having_little_energy" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "feeling_tired_or_having_little_energy",
         },
         {
-            #DPQ050: poor_appetitie_or_overeating 
+            # DPQ050: poor_appetitie_or_overeating
             "question": "Over the last 2 weeks, how often have you been bothered by having poor appetite or overeating?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "poor_appetitie_or_overeating" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "poor_appetitie_or_overeating",
         },
         {
-            #DPQ060: feeling_bad_about_yourself 
+            # DPQ060: feeling_bad_about_yourself
             "question": "Over the last 2 weeks, how often have you been bothered by feeling bad about yourself - or that you are a failure or have let yourself or your family down?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "feeling_bad_about_yourself" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "feeling_bad_about_yourself",
         },
         {
-            #DPQ070: trouble_concentrating 
+            # DPQ070: trouble_concentrating
             "question": "Over the last 2 weeks, how often have you been bothered by trouble concentrating on things, such as reading the newspaper or watching TV?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "trouble_concentrating" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "trouble_concentrating",
         },
         {
-            #DPQ080: moving_or_speaking_to_slowly_or_fast 
+            # DPQ080: moving_or_speaking_to_slowly_or_fast
             "question": "Over the last 2 weeks, how often have you been bothered by moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "moving_or_speaking_to_slowly_or_fast" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "moving_or_speaking_to_slowly_or_fast",
         },
         {
-            #DPQ090: thoughts_you_would_be_better_off_dead 
+            # DPQ090: thoughts_you_would_be_better_off_dead
             "question": "Over the last 2 weeks, how often have you been bothered by thoughts that you would be better off dead or of hurting yourself in some way?",
-            "options": ["Dummy","Not at all", "Several days", "More than half the days", "Nearly every day"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "thoughts_you_would_be_better_off_dead" 
+            "options": [
+                "Dummy",
+                "Not at all",
+                "Several days",
+                "More than half the days",
+                "Nearly every day",
+            ],
+            "var_code": "thoughts_you_would_be_better_off_dead",
         },
         {
-            #DPQ100: difficult_doing_daytoday_tasks 
+            # DPQ100: difficult_doing_daytoday_tasks
             "question": "How difficult have these problems made it for you to do your work, take care of things at home, or get along with people?",
-            "options": ["Dummy","Not at all difficult","Somewhat difficult","Very difficult","Extremely difficult"],
-            "option_codes": [np.nan, 0, 1, 2, 3],
-            "var_code": "difficult_doing_daytoday_tasks" 
+            "options": [
+                "Dummy",
+                "Not at all difficult",
+                "Somewhat difficult",
+                "Very difficult",
+                "Extremely difficult",
+            ],
+            "var_code": "difficult_doing_daytoday_tasks",
         },
         {
-            #ALQ290: times_with_12plus_alc 
+            # ALQ290: times_with_12plus_alc
             "question": "During the past 12 months, about how often did you have 12 or more drinks in a single day?",
-            "options": ["Dummy","Never in the last year","Every day","Nearly every day","3-4 times a week","2 times a week","Once a week","2-3 times a month","Once a month", "7-11 times in the last year","3-6 times in the last year","1-2 times in the last year"],
-            "option_codes": [np.nan, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            "var_code": "times_with_12plus_alc" 
+            "options": [
+                "Dummy",
+                "Never in the last year",
+                "Every day",
+                "Nearly every day",
+                "3-4 times a week",
+                "2 times a week",
+                "Once a week",
+                "2-3 times a month",
+                "Once a month",
+                "7-11 times in the last year",
+                "3-6 times in the last year",
+                "1-2 times in the last year",
+            ],
+            "var_code": "times_with_12plus_alc",
         },
         {
-            #BPQ080: high_cholesterol
+            # BPQ080: high_cholesterol
             "question": "Have you ever been told by a health care professional that your blood cholesterol level was high?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "high_cholesterol" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "high_cholesterol",
         },
         {
-            #BPQ090D: cholesterol_prescription
+            # BPQ090D: cholesterol_prescription
             "question": "Have you ever been told by a health care professional to take prescribed medicine to lower blood cholesterol levels?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "cholesterol_prescription" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "cholesterol_prescription",
         },
         {
-            #BPQ020: high_bp
+            # BPQ020: high_bp
             "question": "Has a health professional ever told you that you have/had hypertension (high blood pressure)?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "high_bp" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "high_bp",
         },
         {
-            #PAQ665: moderate_recreation
+            # PAQ665: moderate_recreation
             "question": "In a typical week, do you do any moderate intensity recreational activities that cause a small increase in breathing/heart rate such as brisk walking, bicycling, or swimming for at least 10 minutes continuously?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "moderate_recreation" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "moderate_recreation",
         },
         {
-            #PAQ670: count_days_moderate_recreational_activity
+            # PAQ670: count_days_moderate_recreational_activity
             "question": "In a typical week, on how many days do you do moderate intensity recreational activities?",
-            "options": ["Dummy","1","2","3","4","5","6","7"],
-            "option_codes": [np.nan, 1, 2, 3, 4, 5, 6, 7],
-            "var_code": "count_days_moderate_recreational_activity" 
+            "options": ["Dummy", "1", "2", "3", "4", "5", "6", "7"],
+            "var_code": "count_days_moderate_recreational_activity",
         },
         {
-            #PAQ650: vigorous_recreation
-            "question": "In a typical week, do you do any vigorous intensity recreational activities that cause large increases in breathing/heart rate like running or basketball for at least 10 minutes continuously?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "vigorous_recreation" 
+            # PAQ650: vigorous_recreation
+            "question": "In a typical wekk, do you do any vigorous intensity recreational activities that cause large increases in breathing/heart rate like running or basketball for at least 10 minutes continuously?",
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "vigorous_recreation",
         },
         {
-            #MCQ160m: thyroid_issues
+            # MCQ160m: thyroid_issues
             "question": "Has a health professional ever told you that you had a thyroid problem?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "thyroid_issues" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "thyroid_issues",
         },
         {
-            #MCQ160a: arthritis
+            # MCQ160a: arthritis
             "question": "Has a health professional ever told you that you have/had arthritis",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "arthritis" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "arthritis",
         },
         {
-            #MCQ160f: stroke
+            # MCQ160f: stroke
             "question": "Has a health professional ever told you that you had a stroke?",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "stroke" 
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "stroke",
         },
         {
-            #MCQ010: asthma
+            # MCQ010: asthma
             "question": "Has a health professional ever told you that you have asthma??",
-            "options": ["Dummy","Yes","No"],
-            "option_codes": [np.nan, 1, 2],
-            "var_code": "asthma" 
-        }
+            "options": ["Dummy", "Yes", "No"],
+            "var_code": "asthma",
+        },
     ]
 
     # Display the questions and collect answers in a form
-    with st.form(key='survey_form'):
+    with st.form(key="survey_form"):
         answers = []
         # Add invisible dummy radio button to hide preselection
         st.markdown(
-        """
-    <style>
-        div[role=radiogroup] label:first-of-type {
-            visibility: hidden;
-            height: 0px;
-        }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
+            """
+        <style>
+            div[role=radiogroup] label:first-of-type {
+                visibility: hidden;
+                height: 0px;
+            }
+        </style>
+        """,
+            unsafe_allow_html=True,
+        )
+        # dictionary of question var_code:option_codes
+        # we pass this dictionary to the predict api via post request
+        survey_answers_dict = {}
 
         # Present questions with answer options
         for question in questions:
-            if question["question"] == "How old are you? (Please select the closest option)" or\
-                question["question"] == "What is your height in inches? (Please select the closest option)" or \
-                question["question"] == "What is your weight in pounds? (Please select the closest option)" or \
-                question["question"] == "How many months ago did you have your baby? (Please select the closest option)":
+            if (
+                question["question"]
+                == "How old are you? (Please select the closest option)"
+                or question["question"]
+                == "What is your height in inches? (Please select the closest option)"
+                or question["question"]
+                == "What is your weight in pounds? (Please select the closest option)"
+                or question["question"]
+                == "How many months ago did you have your baby? (Please select the closest option)"
+            ):
                 answer = st.selectbox(question["question"], question["options"])
-                answers.append(answer)
-            elif question["question"] == "About how long has it been since you last saw a health care professional about your health for any reason?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by the following problems: little interest or pleasure in doing things?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by feeling down, depressed, or hopeless?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by trouble falling or staying asleep, or sleeping too much?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by feeling tired or having little energy?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by having poor appetite or overeating?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by feeling bad about yourself - or that you are a failure or have let yourself or your family down?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by trouble concentrating on things, such as reading the newspaper or watching TV?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?" or\
-                    question["question"] == "Over the last 2 weeks, how often have you been bothered by thoughts that you would be better off dead or of hurting yourself in some way?" or\
-                    question["question"] == "How difficult have these problems made it for you to do your work, take care of things at home, or get along with people?" or\
-                    question["question"] == "During the past 12 months, about how often did you have 12 or more drinks in a single day?":
-                answer = st.radio(question["question"], question["options"]) 
-                answer_int = question["options"].index(answer)-1
-                answers.append(answer_int)
+                # answers.append(answer)
+            elif (
+                question["question"]
+                == "About how long has it been since you last saw a health care professional about your health for any reason?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by the following problems: little interest or pleasure in doing things?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by feeling down, depressed, or hopeless?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by trouble falling or staying asleep, or sleeping too much?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by feeling tired or having little energy?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by having poor appetite or overeating?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by feeling bad about yourself - or that you are a failure or have let yourself or your family down?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by trouble concentrating on things, such as reading the newspaper or watching TV?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by moving or speaking so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?"
+                or question["question"]
+                == "Over the last 2 weeks, how often have you been bothered by thoughts that you would be better off dead or of hurting yourself in some way?"
+                or question["question"]
+                == "How difficult have these problems made it for you to do your work, take care of things at home, or get along with people?"
+                or question["question"]
+                == "During the past 12 months, about how often did you have 12 or more drinks in a single day?"
+            ):
+                answer = st.radio(question["question"], question["options"])
             else:
                 answer = st.radio(question["question"], question["options"])
-                answer_int = question["options"].index(answer)
-                answers.append(answer_int)
+            if question.get("option_is_continuous") == True:
+                survey_answers_dict[question.get("var_code")] = answer
+            else:
+                # use the index pf the answer to get corresponding code
+                if question.get("option_codes"):
+                    survey_answers_dict[question.get("var_code")] = question.get(
+                        "option_codes"
+                    )[question["options"].index(answer)]
 
-        # Generate predictions 
-        feature_matrix = [answers]  # Convert answers to a feature matrix
-        prediction = model.predict(feature_matrix)
+        # Make prediction using the model using API
+        prediction = st.form_submit_button(
+            label="Submit", on_click=PostRequestSurveyAPI, args=(survey_answers_dict,)
+        )
+
+        print(survey_answers_dict)
+        print(prediction)
 
         # Convert prediction label to description
-        if prediction[0] == 1:
+        if prediction == 1:
             prediction_text = "Predicted to have Postpartum Depression. We recommend reaching out to your healthcare provider for further evaluation."
         else:
             prediction_text = "Predicted not to have Postpartum Depression. Our model predicts a low likelihood of PPD but please reach out to your healthcare provider if you feel the need for further evaluation."
 
-        submit = st.form_submit_button(label='Submit')
+        # submit = st.form_submit_button(label="Submit")
 
-    # # Show the prediction after submission
-    if submit:
-        st.write("**Prediction:**", prediction_text)
+        # # Show the prediction after submission
+        if prediction:
+            st.write("**Prediction:**", prediction_text)
 
-    
 
 if __name__ == "__main__":
     main()
-
-
-
