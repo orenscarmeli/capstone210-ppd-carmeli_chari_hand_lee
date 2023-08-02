@@ -114,6 +114,52 @@ curl -X POST -H 'Content-Type: application/json' localhost:8000/predict -d \
     }
 '''
 
+curl -X POST -H 'Content-Type: application/json' http://network-load-balancer-3ec3c60f32bd38c8.elb.us-west-1.amazonaws.com/predict -d \
+'''
+    {
+        "surveys" : [
+            {
+            "little_interest_in_doing_things": 1.0,
+            "feeling_down_depressed_hopeless": 1.0,
+            "trouble_falling_or_staying_asleep": 0.0,
+            "feeling_tired_or_having_little_energy": 0.0,
+            "poor_appetitie_or_overeating": 0.0,
+            "feeling_bad_about_yourself": 0.0,
+            "trouble_concentrating": 0.0,
+            "moving_or_speaking_to_slowly_or_fast": 0.0,
+            "thoughts_you_would_be_better_off_dead": 0.0,
+            "difficult_doing_daytoday_tasks": 0.0,
+            "seen_mental_health_professional": 10.0,
+            "times_with_12plus_alc": 11.0,
+            "time_since_last_healthcare": 12.0,
+            "cholesterol_prescription": 1.0,
+            "high_cholesterol": 1.0,
+            "age_in_years": 1.0,
+            "horomones_not_bc": 16.0,
+            "months_since_birth": 1.0,
+            "arthritis": 18.0,
+            "high_bp": 1.0,
+            "regular_periods": 1.0,
+            "moderate_recreation": 1.0,
+            "thyroid_issues": 1.0,
+            "vigorous_recreation": 1.0,
+            "stroke": 1.0,
+            "is_usa_born": 25.0,
+            "asthma": 1.0,
+            "count_days_moderate_recreational_activity": 1.0,
+            "have_health_insurance": 10.0,
+            "weight_lbs": 150.0,
+            "height_in": 65.0,
+            "count_lost_10plus_pounds": 31.0,
+            "times_with_8plus_alc": 32.0,
+            "duration_last_healthcare_visit": 33.0,
+            "work_schedule": 34.0
+            }
+        ]
+    }
+'''
+
+
 
 read -p "Press enter to continue"
 
