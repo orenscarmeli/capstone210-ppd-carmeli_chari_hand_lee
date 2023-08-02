@@ -68,42 +68,47 @@ echo "health check"
 curl -o /dev/null -s -w "%{http_code}\n" -X GET "http://localhost:8000/health"
 
 echo "\ntest list of inputs:"
+
 curl -X POST -H 'Content-Type: application/json' localhost:8000/predict -d \
 '''
     {
-        "surveys" : [ 
+        "surveys" : [
             {
-               "has_health_insurance": 1.0,
-                "difficult_doing_daytoday_tasks": 0.0,
-                "age_range_first_menstrual_period": 0,
-                "weight_change_intentional": 0,
-                "thoughts_you_would_be_better_off_dead": 0.0,
-                "little_interest_in_doing_things": 1.0,
-                "trouble_concentrating": 0.0,
-                "food_security_level_household": 2.0,
-                "general_health_condition": 4.0,
-                "monthly_poverty_index": 2.0,
-                "food_security_level_adult": 2.0,
-                "count_days_seen_doctor_12mo": 4.0,
-                "has_overweight_diagnosis": 1.0,
-                "feeling_down_depressed_hopeless": 0.0,
-                "count_minutes_moderate_recreational_activity": 15.0,
-                "have_liver_condition": 0,
-                "pain_relief_from_cardio_recoverytime": 1.0,
-                "education_level": 5.0,
-                "count_hours_worked_last_week": 40.0,
-                "age_in_years": 44.0,
-                "has_diabetes": 1.0,
-                "alcoholic_drinks_past_12mo": 5.0,
-                "count_lost_10plus_pounds": 3.0,
-                "days_nicotine_substitute_used": 0,
-                "age_with_angina_pectoris": 33.0,
-                "annual_healthcare_visit_count": 3.0,
-                "poor_appetitie_or_overeating": 1.0,
-                "feeling_bad_about_yourself": 0.0,
-                "has_tried_to_lose_weight_12mo": 0.0,
-                "count_days_moderate_recreational_activity": 2.0,
-                "count_minutes_moderate_sedentary_activity": 960.0
+            "little_interest_in_doing_things": 1.0,
+            "feeling_down_depressed_hopeless": 1.0,
+            "trouble_falling_or_staying_asleep": 0.0,
+            "feeling_tired_or_having_little_energy": 0.0,
+            "poor_appetitie_or_overeating": 0.0,
+            "feeling_bad_about_yourself": 0.0,
+            "trouble_concentrating": 0.0,
+            "moving_or_speaking_to_slowly_or_fast": 0.0,
+            "thoughts_you_would_be_better_off_dead": 0.0,
+            "difficult_doing_daytoday_tasks": 0.0,
+            "seen_mental_health_professional": 10.0,
+            "times_with_12plus_alc": 11.0,
+            "time_since_last_healthcare": 12.0,
+            "cholesterol_prescription": 1.0,
+            "high_cholesterol": 1.0,
+            "age_in_years": 1.0,
+            "horomones_not_bc": 16.0,
+            "months_since_birth": 1.0,
+            "arthritis": 18.0,
+            "high_bp": 1.0,
+            "regular_periods": 1.0,
+            "moderate_recreation": 1.0,
+            "thyroid_issues": 1.0,
+            "vigorous_recreation": 1.0,
+            "stroke": 1.0,
+            "is_usa_born": 25.0,
+            "asthma": 1.0,
+            "count_days_moderate_recreational_activity": 1.0,
+            "have_health_insurance": 10.0,
+            "weight_lbs": 150.0,
+            "height_in": 65.0,
+            "count_lost_10plus_pounds": 31.0,
+            "times_with_8plus_alc": 32.0,
+            "duration_last_healthcare_visit": 33.0,
+            "work_schedule": 34.0
             }
         ]
     }
