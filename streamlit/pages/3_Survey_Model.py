@@ -42,47 +42,9 @@ st.write(
 def PostRequestSurveyAPI(answer_dict):
     url = "http://network-load-balancer-3ec3c60f32bd38c8.elb.us-west-1.amazonaws.com/predict"
     myobj = {"surveys": [answer_dict]}
-    example_dict = {
-        "little_interest_in_doing_things": 1.0,
-        "feeling_down_depressed_hopeless": 1.0,
-        "trouble_falling_or_staying_asleep": 0.0,
-        "feeling_tired_or_having_little_energy": 0.0,
-        "poor_appetitie_or_overeating": 0.0,
-        "feeling_bad_about_yourself": 0.0,
-        "trouble_concentrating": 0.0,
-        "moving_or_speaking_to_slowly_or_fast": 0.0,
-        "thoughts_you_would_be_better_off_dead": 0.0,
-        "difficult_doing_daytoday_tasks": 0.0,
-        "seen_mental_health_professional": 10.0,
-        "times_with_12plus_alc": 11.0,
-        "time_since_last_healthcare": 12.0,
-        "cholesterol_prescription": 1.0,
-        "high_cholesterol": 1.0,
-        "age_in_years": 1.0,
-        "horomones_not_bc": 16.0,
-        "months_since_birth": 1.0,
-        "arthritis": 18.0,
-        "high_bp": 1.0,
-        "regular_periods": 1.0,
-        "moderate_recreation": 1.0,
-        "thyroid_issues": 1.0,
-        "vigorous_recreation": 1.0,
-        "stroke": 1.0,
-        "is_usa_born": 25.0,
-        "asthma": 1.0,
-        "count_days_moderate_recreational_activity": 1.0,
-        "have_health_insurance": 10.0,
-        "weight_lbs": 150.0,
-        "height_in": 65.0,
-        "count_lost_10plus_pounds": 31.0,
-        "times_with_8plus_alc": 32.0,
-        "duration_last_healthcare_visit": 33.0,
-        "work_schedule": 34.0,
-    }
+    print(myobj)
     try:
-        # TODO: swap with actual dictionary when update API
-        # x = requests.post(url, json=myobj)
-        x = requests.post(url, json=example_dict)
+        x = requests.post(url, json=myobj)
         print("request successful")
         print(x.json())
 
@@ -97,8 +59,6 @@ def PostRequestSurveyAPI(answer_dict):
 # Main function
 def main():
     # Provide the questions and answer options
-    ######  'num_dep_screener_0','weight_lbs_over_height_in_ratio'
-
     questions = [
         {
             # RIDAGEYR: age_in_years
@@ -397,6 +357,35 @@ def main():
             "option_codes": [None, 1, 2],
             "var_code": "asthma",
         },
+        # TODO: need to add actual questions for below
+        {
+            # : count_lost_10plus_pounds
+            "question": "fill question4",
+            "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
+            "var_code": "count_lost_10plus_pounds",
+        },
+        {
+            # : times_with_8plus_alc
+            "question": "fill question5",
+            "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
+            "var_code": "times_with_8plus_alc",
+        },
+        {
+            # : duration_last_healthcare_visit
+            "question": "fill question6",
+            "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
+            "var_code": "duration_last_healthcare_visit",
+        },
+        {
+            # : work_schedule
+            "question": "fill question7",
+            "options": ["Dummy", "Yes", "No"],
+            "option_codes": [None, 1, 2],
+            "var_code": "work_schedule",
+        },
     ]
 
     # Display the questions and collect answers in a form
@@ -470,23 +459,23 @@ def main():
                         "option_codes"
                     )[question["options"].index(answer)]
 
-        # remove nulls
-        survey_answers_dict = {k: v for k, v in survey_answers_dict.items() if v}
-        print(survey_answers_dict)
-
+        # remove nulls convert to float
+        survey_answers_dict = {
+            k: (float(v) if v else 0.0) for k, v in survey_answers_dict.items()
+        }
+        # survey_answers_dict = {
+        #     k: (float(v) if v else None) for k, v in survey_answers_dict.items()
+        # }
         # Make prediction using the model using API
         prediction = st.form_submit_button(
             label="Submit", on_click=PostRequestSurveyAPI, args=(survey_answers_dict,)
         )
-        print(prediction)
 
         # Convert prediction label to description
         if prediction == 1:
             prediction_text = "Predicted to have Postpartum Depression. We recommend reaching out to your healthcare provider for further evaluation."
         else:
             prediction_text = "Predicted not to have Postpartum Depression. Our model predicts a low likelihood of PPD but please reach out to your healthcare provider if you feel the need for further evaluation."
-
-        # submit = st.form_submit_button(label="Submit")
 
         # # Show the prediction after submission
         if prediction:
