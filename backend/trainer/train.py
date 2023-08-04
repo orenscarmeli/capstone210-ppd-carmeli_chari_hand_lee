@@ -415,13 +415,13 @@ joblib.dump(gb, model_path)
 
 
 try:
-    get_ipython().system('rm trainer.py')
+    get_ipython().system('rm train.py')
 except:
     pass
 
 
 try:
-    get_ipython().system('jupyter nbconvert --no-prompt --to script trainer.ipynb')
+    get_ipython().system('jupyter nbconvert --no-prompt --to script train.ipynb')
 except:
     pass
 

@@ -5,6 +5,7 @@ hide_default_format = """
        <style>
        #MainMenu {visibility: hidden; }
        footer {visibility: hidden;}
+       
        </style>
        """
 st.set_page_config(

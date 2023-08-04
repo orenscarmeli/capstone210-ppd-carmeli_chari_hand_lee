@@ -124,10 +124,12 @@ async def predict(survey_input: Surveys):
     # logging.warning("in predict")
     survey_list = [list(vars(s).values()) for s in survey_input.surveys]
     X = np.array([np.nan if val is None else val for val in survey_list])
+    logging.warning(f"X: {X}")
 
     # use low
     if (X[0:, 0:11] == 0).sum() >= 9:
         # subset to features for this model
+
         X_low = np.take(X, [11, 10, 31, 18, 16, 25, 32, 12, 33, 34], axis=1)
         if not np.isnan(X_low[0, 1]):
             # count_days_seen_doctor_12mo_bin
@@ -148,7 +150,7 @@ async def predict(survey_input: Surveys):
         # X_low = imputer_low.fit_transform(X_low)
         # X_low = trans_low.fit_transform(X_low)
         X_low = np.nan_to_num(X_low)
-
+        logging.warning(f"low model: {X_low}")
         pred = clf_low.predict(X_low)
 
     else:
@@ -159,9 +161,10 @@ async def predict(survey_input: Surveys):
         # impute and scale
         imputer_high = SimpleImputer(strategy="median")
         trans_high = RobustScaler()
-        X_high = imputer_high.fit_transform(X_2)
-        X_high = trans_high.fit_transform(X_high)
-
+        # X_high = imputer_high.fit_transform(X_2)
+        # X_high = trans_high.fit_transform(X_high)
+        logging.warning(f"high model: {X_high}")
+        X_high = np.nan_to_num(X_high)
         pred = clf_high.predict(X_high)
 
     # pred = clf.predict(survey_features)
