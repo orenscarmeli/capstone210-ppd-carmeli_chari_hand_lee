@@ -64,21 +64,21 @@ def main():
         {
             # RIDAGEYR: age_in_years
             "question": "How old are you? (Please select the closest option)",
-            "options": list(range(0, 86)),
+            "options": list(range(32, 33)),
             "option_is_continuous": True,
             "var_code": "age_in_years",
         },
         {
             # height: height_in for weight_lbs_over_height_in_ratio
             "question": "What is your height in inches? (Please select the closest option)",
-            "options": list(range(48, 82)),
+            "options": list(range(62, 63)),
             "option_is_continuous": True,
             "var_code": "height_in",
         },
         {
             # weight: weight_lbs for weight_lbs_over_height_in_ratio
             "question": "What is your weight in pounds? (Please select the closest option)",
-            "options": list(range(75, 494)),
+            "options": list(range(150, 151)),
             "option_is_continuous": True,
             "var_code": "weight_lbs",
         },
@@ -99,7 +99,7 @@ def main():
         {
             # RHQ197: months_since_birth
             "question": "How many months ago did you have your baby? (Please select the closest option)",
-            "options": list(range(1, 28)),
+            "options": list(range(3, 4)),
             "option_is_continuous": True,
             "var_code": "months_since_birth",
         },
@@ -431,8 +431,47 @@ def main():
         # we pass this dictionary to the predict api via post request
         survey_answers_dict = {}
 
+        # for the preselection
+        preselect_index = [
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+        ]
+
         # Present questions with answer options
-        for question in questions:
+        for indx, question in enumerate(questions):
             if (
                 question["question"]
                 == "How old are you? (Please select the closest option)"
@@ -443,7 +482,11 @@ def main():
                 or question["question"]
                 == "How many months ago did you have your baby? (Please select the closest option)"
             ):
-                answer = st.selectbox(question["question"], question["options"])
+                answer = st.selectbox(
+                    question["question"],
+                    question["options"],
+                    index=preselect_index[indx],
+                )
                 # answers.append(answer)
             elif (
                 question["question"]
@@ -471,9 +514,17 @@ def main():
                 or question["question"]
                 == "During the past 12 months, about how often did you have 12 or more drinks in a single day?"
             ):
-                answer = st.radio(question["question"], question["options"])
+                answer = st.radio(
+                    question["question"],
+                    question["options"],
+                    index=preselect_index[indx],
+                )
             else:
-                answer = st.radio(question["question"], question["options"])
+                answer = st.radio(
+                    question["question"],
+                    question["options"],
+                    index=preselect_index[indx],
+                )
             if question.get("option_is_continuous") == True:
                 survey_answers_dict[question.get("var_code")] = answer
             else:
