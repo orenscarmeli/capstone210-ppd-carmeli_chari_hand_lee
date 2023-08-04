@@ -50,6 +50,7 @@ def PostRequestSurveyAPI(answer_dict):
 
         prediction = x.json()["predictions"][0]["prediction"]
         prediction = int(prediction)
+        prediction = 1
         print(f"prediction is {prediction}")
     except Exception as e:
         print(e)
