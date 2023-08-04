@@ -367,9 +367,22 @@ def main():
         },
         {
             # : times_with_8plus_alc
-            "question": "fill question5",
-            "options": ["Dummy", "Yes", "No"],
-            "option_codes": [None, 1, 2],
+            "question": "During the past 12 months, about how often did you have 8 or more drinks in a single day?",
+            "options": [
+                "Dummy",
+                "Never in the last year",
+                "Every day",
+                "Nearly every day",
+                "3-4 times a week",
+                "2 times a week",
+                "Once a week",
+                "2-3 times a month",
+                "Once a month",
+                "7-11 times in the last year",
+                "3-6 times in the last year",
+                "1-2 times in the last year",
+            ],
+            "option_codes": [None, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             "var_code": "times_with_8plus_alc",
         },
         {
