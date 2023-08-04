@@ -5,4 +5,5 @@ streamlit run 210_Home.py
 # d
 # tmux attach -t StreamSession
 # ps aux | grep streamlit | sed /ubuntu/
-$ ps aux | grep streamlit | grep -Po 'ubuntu\s+\d+' | grep -Po '\d+'
+ps aux | grep streamlit | grep -Po 'ubuntu\s+\d+' | grep -Po '\d+'
+tmux kill-session 

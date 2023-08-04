@@ -357,16 +357,15 @@ def main():
             "option_codes": [None, 1, 2],
             "var_code": "asthma",
         },
-        # TODO: need to add actual questions for below
         {
-            # : count_lost_10plus_pounds
-            "question": "fill question4",
-            "options": ["Dummy", "Yes", "No"],
-            "option_codes": [None, 1, 2],
+            # WHQ225: count_lost_10plus_pounds
+            "question": "How many times have you lost 10 pounds or more because you were trying to lose weight? ",
+            "options": ["1 to 2", "3 to 5", "6 to 10", "11 times or more", "Never"],
+            "option_codes": [1, 2, 3, 4, 5],
             "var_code": "count_lost_10plus_pounds",
         },
         {
-            # : times_with_8plus_alc
+            #  ALQ280: times_with_8plus_alc
             "question": "During the past 12 months, about how often did you have 8 or more drinks in a single day?",
             "options": [
                 "Dummy",
@@ -386,17 +385,28 @@ def main():
             "var_code": "times_with_8plus_alc",
         },
         {
-            # : duration_last_healthcare_visit
-            "question": "fill question6",
-            "options": ["Dummy", "Yes", "No"],
-            "option_codes": [None, 1, 2],
+            # HUD062: duration_last_healthcare_visit
+            "question": "About how long has it been since you last saw a doctor or other health care professional about your health for any reason?",
+            "options": [
+                "Never",
+                "Within the past year (anytime less than 12 months ago)",
+                "Within the last 2 years (1 year but less than 2 years ago)",
+                "Within the last 5 years (2 years but less than 5 years ago)",
+                "5 years ago or more",
+            ],
+            "option_codes": [0, 1, 2, 3, 4],
             "var_code": "duration_last_healthcare_visit",
         },
         {
-            # : work_schedule
-            "question": "fill question7",
-            "options": ["Dummy", "Yes", "No"],
-            "option_codes": [None, 1, 2],
+            # OCQ670: work_schedule
+            "question": "Which of the following best describes your overall work schedule (include all jobs) for the last three months?",
+            "options": [
+                "Traditional 9 AM to 5 PM day",
+                "Evening or nights",
+                "Early mornings",
+                "Variable (early mornings, days, and nights)",
+            ],
+            "option_codes": [1, 2, 3, 5],
             "var_code": "work_schedule",
         },
     ]
