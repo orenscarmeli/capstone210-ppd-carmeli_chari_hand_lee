@@ -1,11 +1,19 @@
 import streamlit as st
 from PIL import Image
 
-
+hide_default_format = """
+       <style>
+       #MainMenu {visibility: hidden; }
+       footer {visibility: hidden;}
+       </style>
+       """
 st.set_page_config(
     page_title="Welcome to Velvaere",
-    page_icon="./page_logo.png"
+    page_icon="./page_logo.png",
+    page_bg_color="0e0e35"
 )
+st.markdown(hide_default_format, unsafe_allow_html=True)
+
 
 st.sidebar.header("Home")
 
