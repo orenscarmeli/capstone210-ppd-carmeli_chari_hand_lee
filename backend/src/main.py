@@ -99,7 +99,6 @@ async def startup():
     # uses environment var in yaml
     # defaults to localhost if not found
     # redis_url = os.environ.get('REDIS_URL', 'localhost')
-    # redis_url = os.environ.get('REDIS_URL', 'localhost')
     redis_url = "redis-service"
     redis = aioredis.from_url(
         f"redis://{redis_url}:6379", encoding="utf8", decode_responses=True
@@ -133,30 +132,13 @@ async def predict(survey_input: Surveys):
     # use low
     if (X[0:, 0:11] == 0).sum() >= 9:
         # subset to features for this model
-
         X_low = np.take(X, [11, 10, 31, 18, 16, 25, 32, 12, 33, 34], axis=1)
         if not np.isnan(X_low[0, 1]):
-            # count_days_seen_doctor_12mo_bin
-            # create bins using estimator
-            # est = KBinsDiscretizer(
-            #     n_bins=10, encode="ordinal", strategy="uniform", subsample=None
-            # )
-
             feature_values = np.array([X_low[0, 1]]).reshape([-1, 1])
-            # est.fit(feature_values)
             feature_values = kbins_est.transform(feature_values)
             X_low = np.append([[np.nan]], X_low, axis=1)
         else:
             X_low = np.append([[np.nan]], X_low, axis=1)
-        # impute and scale
-        # imputer_low = SimpleImputer(strategy="median")
-        # trans_low = RobustScaler()
-        # X_low = imputer_low.fit_transform(X_low)
-        # X_low = trans_low.fit_transform(X_low)
-        # X_low = np.nan_to_num(X_low)
-
-        # logging.warning(f"low model: {X_low}")
-        # pred = clf_low.predict(X_low)
         
         pred = clf_w_preprocess_low.predict(X_low)
         
@@ -170,20 +152,10 @@ async def predict(survey_input: Surveys):
             X_2 = np.append(X_1, [[0.0]], axis=1)
         else:
             X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
-        # impute and scale
-        # imputer_high = SimpleImputer(strategy="median")
-        # trans_high = RobustScaler()
-        # X_high = imputer_high.fit_transform(X_2)
-        # X_high = trans_high.fit_transform(X_high)
         X_high = X_2.copy()
-        # logging.warning(f"high model: {X_high}")
-        
-        # X_high = np.nan_to_num(X_high)
-        # pred = clf_high.predict(X_high)
 
         pred = clf_w_preprocess_high.predict(X_high)
 
-    # pred = clf.predict(survey_features)
     pred = np.reshape(pred, (-1, 1))
     pred_formatted = [Prediction(prediction=p) for p in pred]
     preds = Predictions(predictions=pred_formatted)

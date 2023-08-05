@@ -18,7 +18,7 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.svm import SVR
 import pandas as pd
 import numpy as np
-from ydata_profiling import ProfileReport
+# from ydata_profiling import ProfileReport
 import random
 import ast
 
@@ -30,7 +30,7 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import GridSearchCV
-import xgboost as xgb
+# import xgboost as xgb
 
 from sklearn.linear_model import LogisticRegression, LinearRegression
 import warnings
@@ -45,7 +45,7 @@ from sklearn.ensemble import ExtraTreesClassifier
 import matplotlib.pyplot as plt
 from sklearn.ensemble import  GradientBoostingClassifier
 
-import seaborn as sns
+# import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from sklearn.svm import SVC, LinearSVC 
 from sklearn.neural_network import MLPClassifier
@@ -75,9 +75,9 @@ from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import SMOTE
 from collections import Counter
 
-from tqdm import tqdm
+# from tqdm import tqdm
 
-tqdm.pandas()
+# tqdm.pandas()
 
 
 # Depression screener

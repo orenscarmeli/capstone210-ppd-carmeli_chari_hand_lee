@@ -410,6 +410,13 @@ def main():
             "option_codes": [1, 2, 3, 5],
             "var_code": "work_schedule",
         },
+        {
+            # DID250: count_days_seen_doctor_12mo
+            "question": "How many times have you seen this doctor or other health professional in the past 12 months?",
+            "options": list(range(0, 25)),
+            "option_is_continuous": True,
+            "var_code": "count_days_seen_doctor_12mo",
+        }
     ]
 
     # Display the questions and collect answers in a form
@@ -468,6 +475,7 @@ def main():
             2,
             2,
             2,
+            0,
         ]
 
         # Present questions with answer options
@@ -481,7 +489,9 @@ def main():
                 == "What is your weight in pounds? (Please select the closest option)"
                 or question["question"]
                 == "How many months ago did you have your baby? (Please select the closest option)"
-            ):
+                or question["question"]
+                == "How many times have you seen this doctor or other health professional in the past 12 months?"
+            ):                
                 answer = st.selectbox(
                     question["question"],
                     question["options"],
