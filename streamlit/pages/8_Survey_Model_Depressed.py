@@ -79,7 +79,7 @@ def main():
         {
             # weight: weight_lbs for weight_lbs_over_height_in_ratio
             "question": "What is your weight in pounds? (Please select the closest option)",
-            "options": list(range(150, 151)),
+            "options": list(range(155, 156)),
             "option_is_continuous": True,
             "var_code": "weight_lbs",
         },
@@ -431,7 +431,6 @@ def main():
         # dictionary of question var_code:option_codes
         # we pass this dictionary to the predict api via post request
         survey_answers_dict = {}
-
         # for the preselection
         preselect_index = [
             0,
@@ -444,16 +443,16 @@ def main():
             1,
             1,
             1,
-            4,
-            4,
-            4,
-            4,
-            4,
-            4,
-            4,
-            4,
-            4,
-            4,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            2,
             1,
             1,
             1,
