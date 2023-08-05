@@ -32,8 +32,8 @@ dep_screener_cols = [
 ]
 
 dirname = os.path.dirname(__file__)
-clf_low = joblib.load(os.path.join(dirname, "model_pipeline_low.pkl"))
-clf_high = joblib.load(os.path.join(dirname, "model_pipeline_high.pkl"))
+# clf_low = joblib.load(os.path.join(dirname, "model_pipeline_low.pkl"))
+# clf_high = joblib.load(os.path.join(dirname, "model_pipeline_high.pkl"))
 kbins_est = joblib.load(os.path.join(dirname, "model_kbins.pkl"))
 clf_w_preprocess_low = joblib.load(os.path.join(dirname, "model_low_imp_scl.pkl"))
 clf_w_preprocess_high = joblib.load(os.path.join(dirname, "model_high_imp_scl.pkl"))
