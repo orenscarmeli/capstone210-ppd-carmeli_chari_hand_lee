@@ -154,16 +154,20 @@ async def predict(survey_input: Surveys):
         pred = clf_low.predict(X_low)
 
     else:
+        X = np.nan_to_num(X)
         # num_dep_screener_0
         X_1 = np.append(X[:, :29], [[(X[0:, 0:11] == 0).sum()]], axis=1)
         # weight_lbs_over_height_in_ratio
-        X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
+        if X[0, 30] == 0.0:
+            X_2 = np.append(X_1, [[0.0]], axis=1)
+        else:
+            X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
         # impute and scale
         imputer_high = SimpleImputer(strategy="median")
         trans_high = RobustScaler()
         # X_high = imputer_high.fit_transform(X_2)
         # X_high = trans_high.fit_transform(X_high)
-        X_high = np.nan_to_num(X_2)
+        X_high = X_2.copy()
         logging.warning(f"high model: {X_high}")
         
         X_high = np.nan_to_num(X_high)
