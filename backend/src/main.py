@@ -35,7 +35,8 @@ dirname = os.path.dirname(__file__)
 clf_low = joblib.load(os.path.join(dirname, "model_pipeline_low.pkl"))
 clf_high = joblib.load(os.path.join(dirname, "model_pipeline_high.pkl"))
 kbins_est = joblib.load(os.path.join(dirname, "model_kbins.pkl"))
-
+clf_w_preprocess_low = joblib.load(os.path.join(dirname, "model_low_imp_scl.pkl"))
+clf_w_preprocess_high = joblib.load(os.path.join(dirname, "model_high_imp_scl.pkl"))
 
 
 # Use pydantic.Extra.forbid to only except exact field set from client.
@@ -148,13 +149,17 @@ async def predict(survey_input: Surveys):
         else:
             X_low = np.append([[np.nan]], X_low, axis=1)
         # impute and scale
-        imputer_low = SimpleImputer(strategy="median")
-        trans_low = RobustScaler()
+        # imputer_low = SimpleImputer(strategy="median")
+        # trans_low = RobustScaler()
         # X_low = imputer_low.fit_transform(X_low)
         # X_low = trans_low.fit_transform(X_low)
-        X_low = np.nan_to_num(X_low)
-        logging.warning(f"low model: {X_low}")
-        pred = clf_low.predict(X_low)
+        # X_low = np.nan_to_num(X_low)
+
+        # logging.warning(f"low model: {X_low}")
+        # pred = clf_low.predict(X_low)
+        
+        pred = clf_w_preprocess_low.predict(X_low)
+        
 
     else:
         X = np.nan_to_num(X)
@@ -166,15 +171,17 @@ async def predict(survey_input: Surveys):
         else:
             X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
         # impute and scale
-        imputer_high = SimpleImputer(strategy="median")
-        trans_high = RobustScaler()
+        # imputer_high = SimpleImputer(strategy="median")
+        # trans_high = RobustScaler()
         # X_high = imputer_high.fit_transform(X_2)
         # X_high = trans_high.fit_transform(X_high)
         X_high = X_2.copy()
-        logging.warning(f"high model: {X_high}")
+        # logging.warning(f"high model: {X_high}")
         
-        X_high = np.nan_to_num(X_high)
-        pred = clf_high.predict(X_high)
+        # X_high = np.nan_to_num(X_high)
+        # pred = clf_high.predict(X_high)
+
+        pred = clf_w_preprocess_high.predict(X_high)
 
     # pred = clf.predict(survey_features)
     pred = np.reshape(pred, (-1, 1))

@@ -119,14 +119,14 @@ model_features_opt2 = dep_screener_cols + [
 
 model_features_low_opt7 = [
     'count_days_seen_doctor_12mo_bin',
-    'times_with_12plus_alc',
-    'seen_mental_health_professional',
+    'times_with_12plus_alc', #
+    'seen_mental_health_professional', #
     'count_lost_10plus_pounds',
-    'arthritis',
-    'horomones_not_bc',
-    'is_usa_born',
+    'arthritis', #
+    'horomones_not_bc', #
+    'is_usa_born', #
     'times_with_8plus_alc',
-    'time_since_last_healthcare',
+    'time_since_last_healthcare', #
     'duration_last_healthcare_visit',
     'work_schedule'
 ]

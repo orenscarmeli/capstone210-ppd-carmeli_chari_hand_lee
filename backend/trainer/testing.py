@@ -24,6 +24,8 @@ dep_screener_cols = [
 dirname = os.path.dirname(__file__)
 clf_low = joblib.load(os.path.join(dirname, "model_pipeline_low.pkl"))
 clf_high = joblib.load(os.path.join(dirname, "model_pipeline_high.pkl"))
+kbins_est = joblib.load(os.path.join(dirname, "model_kbins.pkl"))
+
 data = {
     'age_in_years': 32.0,
     'height_in': 62.0, 
@@ -64,49 +66,49 @@ data = {
 
 
 X = np.array([[np.nan if val is None else val for val in data.values()]])
-    # use low
-    if (X[0:, 0:11] == 0).sum() >= 9:
-        # subset to features for this model
+# use low
+if (X[0:, 0:11] == 0).sum() >= 9:
+    # subset to features for this model
 
-        X_low = np.take(X, [11, 10, 31, 18, 16, 25, 32, 12, 33, 34], axis=1)
-        if not np.isnan(X_low[0, 1]):
-            # count_days_seen_doctor_12mo_bin
-            # create bins using estimator
-            est = KBinsDiscretizer(
-                n_bins=10, encode="ordinal", strategy="uniform", subsample=None
-            )
+    X_low = np.take(X, [11, 10, 31, 18, 16, 25, 32, 12, 33, 34], axis=1)
+    if not np.isnan(X_low[0, 1]):
+        # count_days_seen_doctor_12mo_bin
+        # create bins using estimator
+        est = KBinsDiscretizer(
+            n_bins=10, encode="ordinal", strategy="uniform", subsample=None
+        )
 
-            feature_values = np.array([X_low[0, 1]]).reshape([-1, 1])
-            est.fit(feature_values)
-            feature_values = est.transform(feature_values)
-            X_low = np.append([[np.nan]], X_low, axis=1)
-        else:
-            X_low = np.append([[np.nan]], X_low, axis=1)
-        # impute and scale
-        imputer_low = SimpleImputer(strategy="median")
-        trans_low = RobustScaler()
-        # X_low = imputer_low.fit_transform(X_low)
-        # X_low = trans_low.fit_transform(X_low)
-        X_low = np.nan_to_num(X_low)
-        logging.warning(f"low model: {X_low}")
-        pred = clf_low.predict(X_low)
-
+        feature_values = np.array([X_low[0, 1]]).reshape([-1, 1])
+        est.fit(feature_values)
+        feature_values = est.transform(feature_values)
+        X_low = np.append([[np.nan]], X_low, axis=1)
     else:
-        # num_dep_screener_0
-        X_1 = np.append(X[:, :29], [[(X[0:, 0:11] == 0).sum()]], axis=1)
-        # weight_lbs_over_height_in_ratio
-        X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
-        # impute and scale
-        imputer_high = SimpleImputer(strategy="median")
-        trans_high = RobustScaler()
-        # X_high = imputer_high.fit_transform(X_2)
-        # X_high = trans_high.fit_transform(X_high)
-        logging.warning(f"high model: {X_high}")
-        X_high = np.nan_to_num(X_high)
-        pred = clf_high.predict(X_high)
+        X_low = np.append([[np.nan]], X_low, axis=1)
+    # impute and scale
+    imputer_low = SimpleImputer(strategy="median")
+    trans_low = RobustScaler()
+    # X_low = imputer_low.fit_transform(X_low)
+    # X_low = trans_low.fit_transform(X_low)
+    X_low = np.nan_to_num(X_low)
+    logging.warning(f"low model: {X_low}")
+    pred = clf_low.predict(X_low)
 
-    # pred = clf.predict(survey_features)
-    pred = np.reshape(pred, (-1, 1))
-    pred_formatted = [Prediction(prediction=p) for p in pred]
-    preds = Predictions(predictions=pred_formatted)
-    return preds
+else:
+    # num_dep_screener_0
+    X_1 = np.append(X[:, :29], [[(X[0:, 0:11] == 0).sum()]], axis=1)
+    # weight_lbs_over_height_in_ratio
+    X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
+    # impute and scale
+    imputer_high = SimpleImputer(strategy="median")
+    trans_high = RobustScaler()
+    # X_high = imputer_high.fit_transform(X_2)
+    # X_high = trans_high.fit_transform(X_high)
+    logging.warning(f"high model: {X_high}")
+    X_high = np.nan_to_num(X_high)
+    pred = clf_high.predict(X_high)
+
+# pred = clf.predict(survey_features)
+pred = np.reshape(pred, (-1, 1))
+pred_formatted = [Prediction(prediction=p) for p in pred]
+preds = Predictions(predictions=pred_formatted)
+print(preds)
