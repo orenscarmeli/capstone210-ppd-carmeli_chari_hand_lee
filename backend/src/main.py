@@ -163,7 +163,7 @@ async def predict(survey_input: Surveys):
         trans_high = RobustScaler()
         # X_high = imputer_high.fit_transform(X_2)
         # X_high = trans_high.fit_transform(X_high)
-        X_high = np.nan_to_num(X_high)
+        X_high = np.nan_to_num(X_2)
         logging.warning(f"high model: {X_high}")
         
         X_high = np.nan_to_num(X_high)
