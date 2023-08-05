@@ -125,6 +125,7 @@ async def predict(survey_input: Surveys):
     survey_list = [list(vars(s).values()) for s in survey_input.surveys]
     X = np.array([np.nan if val is None else val for val in survey_list])
     logging.warning(f"X: {X}")
+    logging.warning(f"gte 9: {(X[0:, 0:11] == 0)}")
 
     # use low
     if (X[0:, 0:11] == 0).sum() >= 9:
