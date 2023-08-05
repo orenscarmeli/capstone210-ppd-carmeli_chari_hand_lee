@@ -34,6 +34,8 @@ dep_screener_cols = [
 dirname = os.path.dirname(__file__)
 clf_low = joblib.load(os.path.join(dirname, "model_pipeline_low.pkl"))
 clf_high = joblib.load(os.path.join(dirname, "model_pipeline_high.pkl"))
+kbins_est = joblib.load(os.path.join(dirname, "model_kbins.pkl"))
+
 
 
 # Use pydantic.Extra.forbid to only except exact field set from client.
@@ -135,13 +137,13 @@ async def predict(survey_input: Surveys):
         if not np.isnan(X_low[0, 1]):
             # count_days_seen_doctor_12mo_bin
             # create bins using estimator
-            est = KBinsDiscretizer(
-                n_bins=10, encode="ordinal", strategy="uniform", subsample=None
-            )
+            # est = KBinsDiscretizer(
+            #     n_bins=10, encode="ordinal", strategy="uniform", subsample=None
+            # )
 
             feature_values = np.array([X_low[0, 1]]).reshape([-1, 1])
-            est.fit(feature_values)
-            feature_values = est.transform(feature_values)
+            # est.fit(feature_values)
+            feature_values = kbins_est.transform(feature_values)
             X_low = np.append([[np.nan]], X_low, axis=1)
         else:
             X_low = np.append([[np.nan]], X_low, axis=1)
