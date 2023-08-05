@@ -18,9 +18,13 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.svm import SVR
 import pandas as pd
 import numpy as np
-# from ydata_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 import random
 import ast
+
+
+import sklearn
+sklearn.__version__
 
 
 from sklearn import preprocessing
@@ -30,7 +34,7 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import GridSearchCV
-# import xgboost as xgb
+import xgboost as xgb
 
 from sklearn.linear_model import LogisticRegression, LinearRegression
 import warnings
@@ -45,7 +49,7 @@ from sklearn.ensemble import ExtraTreesClassifier
 import matplotlib.pyplot as plt
 from sklearn.ensemble import  GradientBoostingClassifier
 
-# import seaborn as sns
+import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from sklearn.svm import SVC, LinearSVC 
 from sklearn.neural_network import MLPClassifier
@@ -75,9 +79,9 @@ from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import SMOTE
 from collections import Counter
 
-# from tqdm import tqdm
+from tqdm import tqdm
 
-# tqdm.pandas()
+tqdm.pandas()
 
 
 # Depression screener
@@ -119,91 +123,20 @@ model_features_opt2 = dep_screener_cols + [
 
 model_features_low_opt7 = [
     'count_days_seen_doctor_12mo_bin',
-    'times_with_12plus_alc', #
-    'seen_mental_health_professional', #
+    'times_with_12plus_alc',
+    'seen_mental_health_professional',
     'count_lost_10plus_pounds',
-    'arthritis', #
-    'horomones_not_bc', #
-    'is_usa_born', #
+    'arthritis',
+    'horomones_not_bc',
+    'is_usa_born',
     'times_with_8plus_alc',
-    'time_since_last_healthcare', #
+    'time_since_last_healthcare',
     'duration_last_healthcare_visit',
     'work_schedule'
 ]
 
 columns_to_use_low = model_features_low_opt7
 columns_to_use_high = model_features_opt2
-
-
-columns_to_use_high
-
-
-for l in ['little_interest_in_doing_things',
- 'feeling_down_depressed_hopeless',
- 'trouble_falling_or_staying_asleep',
- 'feeling_tired_or_having_little_energy',
- 'poor_appetitie_or_overeating',
- 'feeling_bad_about_yourself',
- 'trouble_concentrating',
- 'moving_or_speaking_to_slowly_or_fast',
- 'thoughts_you_would_be_better_off_dead',
- 'difficult_doing_daytoday_tasks',
- 'seen_mental_health_professional',
- 'times_with_12plus_alc',
- 'time_since_last_healthcare',
- 'cholesterol_prescription',
- 'high_cholesterol',
- 'age_in_years',
- 'horomones_not_bc',
- 'months_since_birth',
- 'arthritis',
- 'high_bp',
- 'regular_periods',
- 'moderate_recreation',
- 'thyroid_issues',
- 'vigorous_recreation',
- 'stroke',
- 'is_usa_born',
- 'asthma',
- 'count_days_moderate_recreational_activity',
- 'have_health_insurance',
- 'num_dep_screener_0',
- 'weight_lbs_over_height_in_ratio']:
- print("'"+l+"'", ':', 1)
-#  print(l, ': float | None = None')
-
-
-len({'age_in_years': 0,
- 'height_in': 48,
- 'weight_lbs': 75,
- 'is_usa_born': 1,
- 'have_health_insurance': 1,
- 'months_since_birth': 1,
- 'regular_periods': 2,
- 'horomones_not_bc': 2,
- 'time_since_last_healthcare': 0,
- 'seen_mental_health_professional': 1,
- 'little_interest_in_doing_things': 3,
- 'feeling_down_depressed_hopeless': 2,
- 'trouble_falling_or_staying_asleep': 1,
- 'feeling_tired_or_having_little_energy': 0,
- 'poor_appetitie_or_overeating': 2,
- 'feeling_bad_about_yourself': 2,
- 'trouble_concentrating': 2,
- 'moving_or_speaking_to_slowly_or_fast': 1,
- 'thoughts_you_would_be_better_off_dead': 1,
- 'difficult_doing_daytoday_tasks': 2,
- 'times_with_12plus_alc': 2,
- 'high_cholesterol': 1,
- 'cholesterol_prescription': 2,
- 'high_bp': 1,
- 'moderate_recreation': 1,
- 'count_days_moderate_recreational_activity': 4,
- 'vigorous_recreation': 1,
- 'thyroid_issues': 2,
- 'arthritis': 2,
- 'stroke': 1,
- 'asthma': 1})
 
 
 # # Opt 9: Ensemble Model
@@ -221,9 +154,6 @@ len({'age_in_years': 0,
 # Notes
 # - _low = has 9+ dep screeners answered 0
 # - _high = has <9 dep screeners answered 0
-
-len(list(set([model_features_low_opt7 + model_features_opt2][0])))
-
 
 # class CustomFeatures(TransformerMixin):
 #     def __init__(self, some_stuff=None, column_names= []):
@@ -313,6 +243,12 @@ est = KBinsDiscretizer(
     subsample=None
 )
 est.fit(feature_values)
+
+# dump kbins so we can use this on inference
+model_filename = "model_kbins.pkl"
+model_path = join(getcwd(), model_filename)
+joblib.dump(est, model_path)
+
 feature_values = est.transform(feature_values)
 
 fill_arr = cdc_survey_pmom['count_days_seen_doctor_12mo'].values.copy()
@@ -321,6 +257,9 @@ cdc_survey_pmom['count_days_seen_doctor_12mo_bin'] = fill_arr
 
 
 
+
+
+est.bin_edges_
 
 
 # subset to features and do preprocessing
@@ -341,6 +280,7 @@ imputer_low = SimpleImputer(strategy='median')
 trans_low = RobustScaler()
 x_train_low = imputer_low.fit_transform(x_train_low)
 x_train_low = trans_low.fit_transform(x_train_low)
+
 x_test_low = imputer_low.fit_transform(x_test_low)
 x_test_low = trans_low.fit_transform(x_test_low)
 
@@ -355,16 +295,31 @@ print(f"x_train_low_rus: {x_train_low_rus.shape}")
 
 
 # fit
-rf = RandomForestClassifier(random_state=42)
-rf.fit(x_train_low_rus, y_train_low_rus)
-y_pred_low = rf.predict(x_test_low)
+# gb_1 = GradientBoostingClassifier(random_state=42)
+# gb_1.fit(x_train_low_rus, y_train_low_rus)
+# y_pred_low = gb_1.predict(x_test_low)
 
-pd.DataFrame(classification_report(y_test_low,y_pred_low,output_dict=True))
+low_pipeline = make_pipeline(imputer_low, trans_low, 
+    GradientBoostingClassifier(
+        random_state=42)
+)
+low_pipeline[:2].fit(x_train_low_rus)
+low_pipeline[2].fit(x_train_low_rus, y_train_low_rus)
 
+y_pred_low = low_pipeline.predict(x_train_low_rus)
+# to pickle for inference later
 
-model_filename = "model_pipeline_low.pkl"
+model_filename = "model_low_imp_scl.pkl"
 model_path = join(getcwd(), model_filename)
-joblib.dump(rf, model_path)
+joblib.dump(low_pipeline, model_path)
+
+
+pd.DataFrame(classification_report(y_train_low_rus,y_pred_low,output_dict=True))
+
+
+# model_filename = "model_pipeline_low.pkl"
+# model_path = join(getcwd(), model_filename)
+# joblib.dump(gb_1, model_path)
 
 
 
@@ -379,14 +334,15 @@ x_train_high, x_test_high, y_train_high, y_test_high = train_test_split(
     test_size=0.2, 
     random_state=42
 ) 
+print(x_train_high.shape)
 # impute and scale
 imputer_high = SimpleImputer(strategy='median')  
 trans_high = RobustScaler()
 x_train_high = imputer_high.fit_transform(x_train_high)
 x_train_high = trans_high.fit_transform(x_train_high)
+
 x_test_high = imputer_high.fit_transform(x_test_high)
 x_test_high = trans_high.fit_transform(x_test_high)
-
 # partially correct for class imbalance
 rus_model1 = RandomUnderSampler(
     random_state=42, 
@@ -395,22 +351,28 @@ rus_model1 = RandomUnderSampler(
 )
 x_train_high_rus, y_train_high_rus = rus_model1.fit_resample(x_train_high,y_train_high)
 print(f"x_train_high_rus: {x_train_high_rus.shape}")
+# gb = GradientBoostingClassifier(random_state=42)
+# gb.fit(x_train_high_rus, y_train_high_rus)
+# y_pred_high = gb.predict(x_test_high)
 
+# make pipeline version
+high_pipeline = make_pipeline(imputer_high, trans_high, GradientBoostingClassifier(random_state=42))
+high_pipeline[:2].fit(x_train_high_rus)
+high_pipeline[2].fit(x_train_high_rus, y_train_high_rus)
 
+y_pred_high = high_pipeline.predict(x_train_high_rus)
+# to pickle for inference later
 
-
-
-
-gb = GradientBoostingClassifier(random_state=42)
-gb.fit(x_train_high_rus, y_train_high_rus)
-y_pred_high = gb.predict(x_test_high)
-
-pd.DataFrame(classification_report(y_test_high,y_pred_high,output_dict=True))
-
-
-model_filename = "model_pipeline_high.pkl"
+model_filename = "model_high_imp_scl.pkl"
 model_path = join(getcwd(), model_filename)
-joblib.dump(gb, model_path)
+joblib.dump(high_pipeline, model_path)
+
+pd.DataFrame(classification_report(y_train_high_rus,y_pred_high,output_dict=True))
+
+
+# model_filename = "model_pipeline_high.pkl"
+# model_path = join(getcwd(), model_filename)
+# joblib.dump(gb, model_path)
 
 
 
