@@ -494,7 +494,7 @@ def main():
 
         # remove nulls convert to float
         survey_answers_dict = {
-            k: (float(v) if v else 0.0) for k, v in survey_answers_dict.items()
+            k: float(v) for k, v in survey_answers_dict.items() if v
         }
         # survey_answers_dict = {
         #     k: (float(v) if v else None) for k, v in survey_answers_dict.items()
