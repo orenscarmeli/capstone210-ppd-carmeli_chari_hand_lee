@@ -163,38 +163,9 @@ curl -X POST -H 'Content-Type: application/json' http://network-load-balancer-3e
 '''
     {
         "surveys" : [
-            {
-            "little_interest_in_doing_things": 2.0,
-            "feeling_down_depressed_hopeless": 2.0,
-            "trouble_falling_or_staying_asleep": 1.0,
-            "feeling_tired_or_having_little_energy": 3.0,
-            "poor_appetitie_or_overeating": 3.0,
-            "feeling_bad_about_yourself": 1.0,
-            "trouble_concentrating": 3.0,
-            "moving_or_speaking_to_slowly_or_fast": 0.0,
-            "thoughts_you_would_be_better_off_dead": 1.0,
-            "difficult_doing_daytoday_tasks": 3.0,
-            "seen_mental_health_professional": 1.0,
-            "times_with_12plus_alc": 0.0,
-            "time_since_last_healthcare": nan,
-            "cholesterol_prescription": 2.0,
-            "high_cholesterol": 2.0,
-            "age_in_years": 43,
-            "horomones_not_bc": 2.0,
-            "months_since_birth": nan,
-            "arthritis": 1.0,
-            "high_bp": 2.0,
-            "regular_periods": 2.0,
-            "moderate_recreation": 1.0,
-            "thyroid_issues": 1.0,
-            "vigorous_recreation": 2.0,
-            "stroke": 2.0,
-            "is_usa_born": 1.0,
-            "asthma": 2.0,
-            "count_days_moderate_recreational_activity": 3.0,
-            "have_health_insurance": 1.0,
-       
-            }
+    {
+        "little_interest_in_doing_things": 0.0, "feeling_tired_or_having_little_energy": 0.0, "time_since_last_healthcare": nan, "months_since_birth": nan, "moderate_recreation": 1.0, "arthritis": 2.0, "vigorous_recreation": 2.0, "horomones_not_bc": 2.0, "high_bp": 2.0, "times_with_12plus_alc": nan, "cholesterol_prescription": 2.0, "thyroid_issues": 2.0, "have_health_insurance": 1.0, "stroke": 2.0, "age_in_years": 48, "trouble_concentrating": 0.0, "thoughts_you_would_be_better_off_dead": 0.0, "moving_or_speaking_to_slowly_or_fast": 0.0, "num_dep_screener_0": 9, "feeling_down_depressed_hopeless": 0.0, "feeling_bad_about_yourself": 0.0, "count_days_moderate_recreational_activity": 5.0, "high_cholesterol": 2.0, "trouble_falling_or_staying_asleep": 0.0, "seen_mental_health_professional": 2.0, "asthma": 2.0, "weight_lbs_over_height_in_ratio": 2.1, "poor_appetitie_or_overeating": 0.0, "difficult_doing_daytoday_tasks": nan, "is_usa_born": 1.0, "regular_periods": 1.0}
+
         ]
     }
 '''

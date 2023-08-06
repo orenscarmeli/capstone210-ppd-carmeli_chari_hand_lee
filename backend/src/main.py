@@ -133,7 +133,7 @@ async def predict(survey_input: Surveys):
     if (X[0:, 0:11] == 0).sum() >= 9:
         # subset to features for this model
         X_low = np.take(X, [11, 10, 31, 18, 16, 25, 32, 12, 33, 34], axis=1)
-        logging.warning(f"X_low: {X_low}")
+        logging.warning(f"X_low1: {X_low}")
         # if not null on binning feature
         if not np.isnan(X_low[0, 1]):
             feature_values = np.array([X_low[0, 1]]).reshape([-1, 1])
@@ -142,9 +142,11 @@ async def predict(survey_input: Surveys):
         # else keep the nan
         else:
             X_low = np.append([[np.nan]], X_low, axis=1)
-        logging.warning(f"X_low: {X_low}")
+        logging.warning(f"X_low2: {X_low}")
+        X_low = clf_w_preprocess_low[:2].transform(X_low)
+        logging.warning(f"X_low3: {X_low}")
         
-        pred = clf_w_preprocess_low.predict(X_low)
+        pred = clf_w_preprocess_low[2].predict(X_low)
         
 
     else:
@@ -162,8 +164,10 @@ async def predict(survey_input: Surveys):
             X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
         X_high = X_2.copy()
         logging.warning(f"X_high: {X_high}")
+        X_high = clf_w_preprocess_high[:2].transform(X_high)
+        logging.warning(f"X_high: {X_high}")
 
-        pred = clf_w_preprocess_high.predict(X_high)
+        pred = clf_w_preprocess_high[2].predict(X_high)
 
     pred = np.reshape(pred, (-1, 1))
     pred_formatted = [Prediction(prediction=p) for p in pred]
