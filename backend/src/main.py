@@ -163,9 +163,9 @@ async def predict(survey_input: Surveys):
         else:
             X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
         X_high = X_2.copy()
-        logging.warning(f"X_high: {X_high}")
+        logging.warning(f"X_high1: {X_high}")
         X_high = clf_w_preprocess_high[:2].transform(X_high)
-        logging.warning(f"X_high: {X_high}")
+        logging.warning(f"X_high2: {X_high}")
 
         pred = clf_w_preprocess_high[2].predict(X_high)
 
