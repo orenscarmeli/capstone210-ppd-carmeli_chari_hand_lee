@@ -123,7 +123,7 @@ async def get_health():
 # @cache(expire=60)
 @app.post("/predict", response_model=Predictions)
 async def predict(survey_input: Surveys):
-    # logging.warning("in predict")
+    logging.warning("in predict")
     survey_list = [list(vars(s).values()) for s in survey_input.surveys]
     X = np.array([np.nan if val is None else val for val in survey_list])
     logging.warning(f"X: {X}")
