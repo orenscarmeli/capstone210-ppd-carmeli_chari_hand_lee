@@ -133,26 +133,35 @@ async def predict(survey_input: Surveys):
     if (X[0:, 0:11] == 0).sum() >= 9:
         # subset to features for this model
         X_low = np.take(X, [11, 10, 31, 18, 16, 25, 32, 12, 33, 34], axis=1)
+        logging.warning(f"X_low: {X_low}")
+        # if not null on binning feature
         if not np.isnan(X_low[0, 1]):
             feature_values = np.array([X_low[0, 1]]).reshape([-1, 1])
             feature_values = kbins_est.transform(feature_values)
-            X_low = np.append([[np.nan]], X_low, axis=1)
+            X_low = np.append(feature_values, X_low, axis=1)
+        # else keep the nan
         else:
             X_low = np.append([[np.nan]], X_low, axis=1)
+        logging.warning(f"X_low: {X_low}")
         
         pred = clf_w_preprocess_low.predict(X_low)
         
 
     else:
-        X = np.nan_to_num(X)
-        # num_dep_screener_0
+        # X = np.nan_to_num(X)
+        # add num_dep_screener_0
         X_1 = np.append(X[:, :29], [[(X[0:, 0:11] == 0).sum()]], axis=1)
-        # weight_lbs_over_height_in_ratio
+        # add weight_lbs_over_height_in_ratio
         if X[0, 30] == 0.0:
-            X_2 = np.append(X_1, [[0.0]], axis=1)
+            X_2 = np.append(X_1, [[np.nan]], axis=1)
+        elif X[0, 30] is None:
+            X_2 = np.append(X_1, [[np.nan]], axis=1)
+        elif X[0, 29] is None:
+            X_2 = np.append(X_1, [[np.nan]], axis=1)
         else:
             X_2 = np.append(X_1, [[(X[0, 29] / X[0, 30])]], axis=1)
         X_high = X_2.copy()
+        logging.warning(f"X_high: {X_high}")
 
         pred = clf_w_preprocess_high.predict(X_high)
 
