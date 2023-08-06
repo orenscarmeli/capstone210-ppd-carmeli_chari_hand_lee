@@ -50,7 +50,6 @@ def PostRequestSurveyAPI(answer_dict):
 
         prediction = x.json()["predictions"][0]["prediction"]
         prediction = int(prediction)
-        prediction = 1
         print(f"prediction is {prediction}")
     except Exception as e:
         print(e)
@@ -65,21 +64,21 @@ def main():
         {
             # RIDAGEYR: age_in_years
             "question": "How old are you? (Please select the closest option)",
-            "options": list(range(32, 33)),
+            "options": list(range(32, 32)),
             "option_is_continuous": True,
             "var_code": "age_in_years",
         },
         {
             # height: height_in for weight_lbs_over_height_in_ratio
             "question": "What is your height in inches? (Please select the closest option)",
-            "options": list(range(62, 63)),
+            "options": list(range(62, 62)),
             "option_is_continuous": True,
             "var_code": "height_in",
         },
         {
             # weight: weight_lbs for weight_lbs_over_height_in_ratio
             "question": "What is your weight in pounds? (Please select the closest option)",
-            "options": list(range(155, 156)),
+            "options": list(range(155, 155)),
             "option_is_continuous": True,
             "var_code": "weight_lbs",
         },
@@ -100,7 +99,7 @@ def main():
         {
             # RHQ197: months_since_birth
             "question": "How many months ago did you have your baby? (Please select the closest option)",
-            "options": list(range(3, 4)),
+            "options": list(range(3, 3)),
             "option_is_continuous": True,
             "var_code": "months_since_birth",
         },
@@ -444,37 +443,37 @@ def main():
             0,
             0,
             1,
-            1,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
             0,
             0,
             0,
-            0,
-            0,
-            0,
-            1,
             2,
+            0,
+            2,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
             1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
             1,
+            0,
+            0,
             1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
+            11,
+            0,
+            2,
             0
         ]
 
@@ -544,9 +543,11 @@ def main():
                         "option_codes"
                     )[question["options"].index(answer)]
 
+        print(survey_answers_dict)
+
         # remove nulls convert to float
         survey_answers_dict = {
-            k: float(v) for k, v in survey_answers_dict.items() if v
+            k: float(v) for k, v in survey_answers_dict.items() if v is not None
         }
         # survey_answers_dict = {
         #     k: (float(v) if v else None) for k, v in survey_answers_dict.items()
